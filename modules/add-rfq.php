@@ -11,15 +11,13 @@ if (isset($_POST['create_rfq'])) {
     $customer_id = $_POST['customer_id'];
     $total = $_POST['total'];
 
-    // Insert RFQ (no code field)
     $q = "INSERT INTO rfqs (customer_id, status, total_price, created_at) 
           VALUES ('$customer_id','Open','$total',NOW())";
     mysqli_query($conn, $q);
 
-    // Get new RFQ id
     $rfq_id = mysqli_insert_id($conn);
 
-    header("Location: rfq_edit.php?id=$rfq_id"); // Redirect to edit page
+    header("Location: rfq_edit.php?id=$rfq_id");
     exit;
 }
 ?>
@@ -41,7 +39,7 @@ if (isset($_POST['create_rfq'])) {
                 </div>
                 <div class="mb-3">
                     <label>Total Amount</label>
-                    <input type="number" step="0.01" class="form-control" name="total" required>
+                    <input type="number" min="0" step="0.01" class="form-control" name="total" required>
                 </div>
                 <button class="btn btn-primary" name="create_rfq">Save RFQ</button>
                 <a href="rfqs.php" class="btn btn-secondary">Cancel</a>

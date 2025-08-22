@@ -40,7 +40,7 @@ $result = mysqli_query($conn, "SELECT * FROM customers ORDER BY id DESC");
                 <table class="table table-hover align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th>ID</th>
+                            <th>Customer #</th>
                             <th>Name</th>
                             <th>Company</th>
                             <th>Email</th>
@@ -52,7 +52,7 @@ $result = mysqli_query($conn, "SELECT * FROM customers ORDER BY id DESC");
                     <tbody>
                         <?php while ($c = mysqli_fetch_assoc($result)) { ?>
                             <tr>
-                                <td><?= $c['id'] ?></td>
+                                <td><?= $c['code'] ?></td>
                                 <td><?= htmlspecialchars($c['name']) ?></td>
                                 <td><?= htmlspecialchars($c['company']) ?></td>
                                 <td><?= htmlspecialchars($c['email']) ?></td>
@@ -73,7 +73,6 @@ $result = mysqli_query($conn, "SELECT * FROM customers ORDER BY id DESC");
     </div>
 </div>
 
-<!-- New Customer Modal -->
 <div class="modal fade" id="newCustomerModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">

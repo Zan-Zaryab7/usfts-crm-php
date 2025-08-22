@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 </div>
                 <div class="mb-3">
                     <label>Total Amount</label>
-                    <input type="number" step="0.01" name="total_amount" class="form-control"
+                    <input type="number" min="0" step="0.01" name="total_amount" class="form-control"
                         value="<?= $invoice['total_amount'] ?>" required>
                 </div>
                 <div class="mb-3">

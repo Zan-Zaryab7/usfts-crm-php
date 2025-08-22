@@ -25,7 +25,7 @@ $rfqs = mysqli_query($conn, "SELECT r.id, r.code, r.created_at, r.status, r.tota
                 <table class="table table-hover align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th>Code</th>
+                            <th>RFQs #</th>
                             <th>Creation Date</th>
                             <th>Customer</th>
                             <th>Total</th>

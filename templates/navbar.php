@@ -11,6 +11,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" href="/crm/public/dashboard.php">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="/crm/modules/products.php">Products</a></li>
                 <li class="nav-item"><a class="nav-link" href="/crm/modules/customers.php">Customers</a></li>
                 <li class="nav-item"><a class="nav-link" href="/crm/modules/rfqs.php">RFQs</a></li>
                 <li class="nav-item"><a class="nav-link" href="/crm/modules/orders.php">Orders</a></li>

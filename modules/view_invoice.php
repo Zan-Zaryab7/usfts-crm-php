@@ -99,7 +99,7 @@ $order_lines = mysqli_query(
     </div>
 </div>
 
-<div class="container mt-3">
+<div class="container mt-3 mb-4">
     <button onclick="window.print()" class="btn btn-outline-secondary">Print Invoice</button>
     <a href="invoices.php" class="btn btn-secondary">Back</a>
 </div>
