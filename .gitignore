@@ -1,0 +1,3 @@
+# Ignore database dump
+crm_db.sql
+*.sql
