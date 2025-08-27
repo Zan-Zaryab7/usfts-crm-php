@@ -11,6 +11,11 @@ $orders = mysqli_query($conn, "
     JOIN customers c ON o.customer_id=c.id
     ORDER BY o.id DESC
 ");
+
+if (isset($_GET['delete'])) {
+    $id = $_GET['delete'];
+    mysqli_query($conn, "DELETE FROM orders WHERE id='$id'");
+}
 ?>
 
 <div class="container-fluid mt-4">
@@ -31,6 +36,7 @@ $orders = mysqli_query($conn, "
                             <th>Total Price</th>
                             <th>Profit</th>
                             <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -42,6 +48,12 @@ $orders = mysqli_query($conn, "
                                 <td><?= number_format($o['total_price'], 2) ?></td>
                                 <td><?= number_format($o['profit'], 2) ?></td>
                                 <td><span class="badge bg-info"><?= $o['status'] ?></span></td>
+                                <td>
+                                    <a href="?delete=<?= $o['id'] ?>" class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('Delete this Order?');">
+                                        Delete
+                                    </a>
+                                </td>
                             </tr>
                         <?php } ?>
                     </tbody>

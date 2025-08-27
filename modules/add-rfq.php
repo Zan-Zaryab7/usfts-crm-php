@@ -25,7 +25,8 @@ if (isset($_POST['create_rfq'])) {
 <div class="container mt-4">
     <div class="card shadow-sm border-0">
         <div class="card-body">
-            <h5 class="card-title mb-3">Create New RFQ</h5>
+            <h5 class="card-title mb-3"><i class="bi bi-arrow-left-circle" title="Back"
+                    onclick="history.go(-1); return false;"></i> Create New RFQ</h5>
             <form method="post">
                 <div class="mb-3">
                     <label>Customer</label>
@@ -42,7 +43,7 @@ if (isset($_POST['create_rfq'])) {
                     <input type="number" min="0" step="0.01" class="form-control" name="total" required>
                 </div>
                 <button class="btn btn-primary" name="create_rfq">Save RFQ</button>
-                <a href="rfqs.php" class="btn btn-secondary">Cancel</a>
+                <button title="Cancel" onclick="history.go(-1); return false;" class="btn btn-secondary">Cancel</button>
             </form>
         </div>
     </div>

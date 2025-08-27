@@ -9,6 +9,11 @@ $rfqs = mysqli_query($conn, "SELECT r.id, r.code, r.created_at, r.status, r.tota
                              FROM rfqs AS r 
                              JOIN customers c ON r.customer_id=c.id 
                              ORDER BY r.id DESC");
+
+if (isset($_GET['delete'])) {
+    $id = $_GET['delete'];
+    mysqli_query($conn, "DELETE FROM rfqs WHERE id='$id'");
+}
 ?>
 
 <div class="container-fluid mt-4">
@@ -30,6 +35,7 @@ $rfqs = mysqli_query($conn, "SELECT r.id, r.code, r.created_at, r.status, r.tota
                             <th>Customer</th>
                             <th>Total</th>
                             <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -41,6 +47,12 @@ $rfqs = mysqli_query($conn, "SELECT r.id, r.code, r.created_at, r.status, r.tota
                                 <td><?= number_format($r['total_price'], 2) ?></td>
                                 <td>
                                     <span class="badge bg-info"><?= $r['status'] ?></span>
+                                </td>
+                                <td>
+                                    <a href="?delete=<?= $r['id'] ?>" class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('Delete this Qoutation?');">
+                                        Delete
+                                    </a>
                                 </td>
                             </tr>
                         <?php } ?>

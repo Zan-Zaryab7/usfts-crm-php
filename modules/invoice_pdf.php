@@ -1,38 +1,86 @@
-<?php
-include("../config/database.php");
-include("../templates/header.php");
-// include("../templates/navbar.php");
-include("../includes/auth.php");
-check_auth();
+<!-- <?php
+// require_once '../vendor/autoload.php';
+// use Dompdf\Dompdf;
+// include("../config/database.php");
+// include("../includes/auth.php");
+// check_auth();
 
-if (!isset($_GET['id'])) {
-    header("Location: invoices.php");
-    exit;
-}
+// if (!isset($_GET['id'])) {
+//     header("Location: invoices.php");
+//     exit;
+// }
 
-$id = intval($_GET['id']);
-$invoice = mysqli_query($conn, "
-    SELECT i.*, o.code AS order_code, o.created_at AS order_date,
-           c.name AS customer, c.company, c.email, c.phone, c.address
-    FROM invoices i
-    JOIN orders o ON i.order_id=o.id
-    JOIN customers c ON o.customer_id=c.id
-    WHERE i.id=$id
-");
-$invoice = mysqli_fetch_assoc($invoice);
+// $id = intval($_GET['id']);
+// $invoice = mysqli_query($conn, "
+//     SELECT i.*, o.code AS order_code, o.created_at AS order_date,
+//            c.name AS customer, c.company, c.email, c.phone, c.address
+//     FROM invoices i
+//     JOIN orders o ON i.order_id=o.id
+//     JOIN customers c ON o.customer_id=c.id
+//     WHERE i.id=$id
+// ");
+// $invoice = mysqli_fetch_assoc($invoice);
 
-if (!$invoice) {
-    echo "<div class='container mt-5'><div class='alert alert-danger'>Invoice not found.</div></div>";
-    include("../templates/footer.php");
-    exit;
-}
+// if (!$invoice) {
+//     echo "<div class='container mt-5'><div class='alert alert-danger'>Invoice not found.</div></div>";
+//     include("../templates/footer.php");
+//     exit;
+// }
 
-$order_lines = mysqli_query(
-    $conn,
-    "
-    SELECT * FROM order_lines WHERE order_id=" . intval($invoice['order_id'])
-);
+// $order_lines = mysqli_query(
+//     $conn,
+//     "
+//     SELECT * FROM order_lines WHERE order_id=" . intval($invoice['order_id'])
+// );
+
+// ob_start();
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM - USFTS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="/crm/assets/style.css" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'DancingScript';
+            src: url('../assets/fonts/static/DancingScript-SemiBold.ttf') format('truetype');
+        }
+
+        .pdf-head-name {
+            font-family: 'DancingScript', sans-serif;
+            font-size: 6em;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: #0d3483;
+        }
+
+        .span-blue {
+            color: #1a6493;
+        }
+
+        .span-red {
+            color: #c6265c;
+        }
+
+        .pdf-header-w {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 900;
+            letter-spacing: -3px;
+        }
+
+        .pdf-head-title {
+            font-size: 5em;
+        }
+    </style>
+</head>
+
+<body class="bg-light"></body>
 
 <section class="bg-white">
     <div class="w-100">
@@ -140,12 +188,12 @@ $order_lines = mysqli_query(
 
                 <div class="mb-4">
                     <h6 class="fw-bold">Bill To:</h6>
-                    <p class="mb-1">customer: <?= htmlspecialchars($invoice['customer']) ?>
+                    <p class="mb-1"><?= htmlspecialchars($invoice['customer']) ?>
                         (<?= htmlspecialchars($invoice['company']) ?>)</p>
-                    <p class="mb-1">email: <?= htmlspecialchars($invoice['email']) ?> |
-                        phone: <?= htmlspecialchars($invoice['phone']) ?>
+                    <p class="mb-1"><?= htmlspecialchars($invoice['email']) ?> |
+                        <?= htmlspecialchars($invoice['phone']) ?>
                     </p>
-                    <p>address: <?= nl2br(htmlspecialchars($invoice['address'])) ?></p>
+                    <p><?= nl2br(htmlspecialchars($invoice['address'])) ?></p>
                 </div>
 
                 <div class="table-responsive">
@@ -156,59 +204,38 @@ $order_lines = mysqli_query(
                                 <th>Product</th>
                                 <th>Qty</th>
                                 <th>Unit Price</th>
-                                <th>Sub Total</th>
+                                <th>Total</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
                             $i = 1;
-
                             while ($line = mysqli_fetch_assoc($order_lines)) { ?>
                                 <tr>
                                     <td><?= $i++ ?></td>
                                     <td><?= htmlspecialchars($line['product']) ?></td>
                                     <td><?= $line['qty'] ?></td>
-                                    <td>$ <?= number_format($line['unit_price'], 2) ?></td>
-                                    <td>$ <?= number_format($line['qty'] * $line['unit_price'], 2) ?></td>
-                                </tr>
-                            <?php }
-
-                            $ol = mysqli_query(
-                                $conn,
-                                "
-                                        SELECT SUM(qty * unit_price) AS total_amount FROM order_lines WHERE order_id=" . intval($invoice['order_id'])
-                            );
-                            while ($l = mysqli_fetch_assoc($ol)) {
-                                $ol_total = $l['total_amount'];
-                                ?>
-                                <tr class="table-light">
-                                    <th></th>
-                                    <th></th>
-                                    <th>Due Date</th>
-                                    <th>Paid Date</th>
-                                    <th>Total</th>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td><strong><?= $invoice['due_date'] ?></strong></td>
-                                    <td><strong><?= $invoice['paid_date'] ?></strong></td>
-                                    <td><strong>$ <?= $ol_total ?></strong></td>
+                                    <td><?= number_format($line['unit_price'], 2) ?></td>
+                                    <td><?= number_format($line['qty'] * $line['unit_price'], 2) ?></td>
                                 </tr>
                             <?php } ?>
                         </tbody>
                     </table>
                 </div>
 
-                <!-- <div class="text-end mt-3">
+                <div class="text-end mt-3">
                     <h5>Total: $<?= number_format($invoice['total_amount'], 2) ?></h5>
                     <p class="mb-1"><strong>Due Date:</strong> <?= $invoice['due_date'] ?></p>
                     <?php if ($invoice['paid_date']) { ?>
                         <p class="text-success"><strong>Paid Date:</strong> <?= $invoice['paid_date'] ?></p>
                     <?php } ?>
-                </div> -->
+                </div>
             </div>
         </div>
+    </div>
+
+    <div class="container mt-3 mb-4">
+        <button onclick="window.print()" class="btn btn-outline-secondary">Print Invoice</button>
     </div>
 
     <div class="d-flex m-3 mt-5">
@@ -239,22 +266,25 @@ $order_lines = mysqli_query(
 
     <hr />
 
-    <div class="m-3 mt-5">
+    <div class="m-3">
         <h1 class="span-blue" style="font-size:50px">
             USFTS Specializes in Providing tactical and logistical solutions across a broad range of industries.
         </h1>
-        <h3 class="mt-2 letter-spacing-2">
-            USFTS boasts extensive experience and expertise in delivering high-quality, tactical, and logistical
-            support. The company aims to provide tailored solutions to enhance operational efficiency and adaptability
-            for its clients. The company is dedicated to quality and precision, meeting the needs of government and
-            corporate clients through innovative and reliable solutions.
-        </h3>
-    </div>
-
-    <div class="container mt-5 d-flex justify-content-end">
-        <button onclick="window.print()" class="btn btn-outline-secondary mb-5 me-2">Print Invoice</button>
-        <p onclick="history.go(-1); return false;" title="Back" class="btn btn-secondary mb-5">Back</p>
     </div>
 </section>
 
-<?php include("../templates/footer.php"); ?>
+<?php
+
+// $html = ob_get_clean();
+
+// $dompdf = new Dompdf();
+// $dompdf->loadHtml($html);
+// $dompdf->setPaper('A4', 'portrait');
+// $dompdf->render();
+// $dompdf->stream("invoice");
+?>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html> -->

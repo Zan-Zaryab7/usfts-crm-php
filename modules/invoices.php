@@ -12,6 +12,11 @@ $invoices = mysqli_query($conn, "
     JOIN customers c ON o.customer_id=c.id
     ORDER BY i.id DESC
 ");
+
+if (isset($_GET['delete'])) {
+    $id = $_GET['delete'];
+    mysqli_query($conn, "DELETE FROM invoices WHERE id='$id'");
+}
 ?>
 
 <div class="container-fluid mt-4">
@@ -47,6 +52,10 @@ $invoices = mysqli_query($conn, "
                                 <td>
                                     <a href="view_invoice.php?id=<?= $i['id'] ?>"
                                         class="btn btn-sm btn-outline-primary">View</a>
+                                    <a href="?delete=<?= $i['id'] ?>" class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('Delete this Invoice?');">
+                                        Delete
+                                    </a>
                                 </td>
                             </tr>
                         <?php } ?>

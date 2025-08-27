@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 <div class="container mt-4">
     <div class="card">
         <div class="card-body">
-            <h5>Create New Order</h5>
+            <h5><i class="bi bi-arrow-left-circle" title="Back" onclick="history.go(-1); return false;"></i> Create New Order</h5>
             <form method="post">
                 <div class="mb-3">
                     <label>Customer</label>
@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
                 <br><br>
                 <button class="btn btn-primary">Save Order</button>
-                <a href="orders.php" class="btn btn-secondary">Cancel</a>
+                <button title="Cancel" onclick="history.go(-1); return false;" class="btn btn-secondary">Cancel</button>
             </form>
         </div>
     </div>

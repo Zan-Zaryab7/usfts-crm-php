@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 <div class="container mt-4">
     <div class="card">
         <div class="card-body">
-            <h5>Edit Invoice <?= htmlspecialchars($invoice['code']) ?></h5>
+            <h5><i class="bi bi-arrow-left-circle" title="Back" onclick="history.go(-1); return false;"></i> Edit Invoice <?= htmlspecialchars($invoice['code']) ?></h5>
             <form method="post">
                 <div class="mb-3">
                     <label>Order</label>
@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     <input type="date" name="paid_date" class="form-control" value="<?= $invoice['paid_date'] ?>">
                 </div>
                 <button class="btn btn-primary">Save</button>
-                <a href="invoices.php" class="btn btn-secondary">Cancel</a>
+                <button title="Cancel" onclick="history.go(-1); return false;" class="btn btn-secondary">Cancel</button>
             </form>
         </div>
     </div>

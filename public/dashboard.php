@@ -12,7 +12,7 @@ $total_invoices = mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM inv
 $total_revenue = mysqli_fetch_row(mysqli_query($conn, "SELECT IFNULL(SUM(total_amount),0) FROM invoices WHERE status='Paid'"))[0];
 
 $recent_rfqs = mysqli_query($conn, "
-    SELECT r.id, r.created_at, r.status, c.name AS customer
+    SELECT r.id, r.code, r.created_at, r.status, c.name AS customer
     FROM rfqs r
     JOIN customers c ON r.customer_id=c.id
     ORDER BY r.id DESC LIMIT 5
@@ -86,7 +86,7 @@ $recent_invoices = mysqli_query($conn, "
                     <table class="table mb-0 table-hover align-middle">
                         <thead class="table-light">
                             <tr>
-                                <th>ID</th>
+                                <th>Code</th>
                                 <th>Date</th>
                                 <th>Customer</th>
                                 <th>Status</th>
@@ -96,7 +96,7 @@ $recent_invoices = mysqli_query($conn, "
                             <?php while ($r = mysqli_fetch_assoc($recent_rfqs)) { ?>
                                 <tr onclick="window.location='../modules/rfq_edit.php?id=<?= $r['id'] ?>'"
                                     style="cursor:pointer;">
-                                    <td><?= $r['id'] ?></td>
+                                    <td><?= $r['code'] ?></td>
                                     <td><?= date("m/d/Y", strtotime($r['created_at'])) ?></td>
                                     <td><?= htmlspecialchars($r['customer']) ?></td>
                                     <td><span class="badge bg-info"><?= $r['status'] ?></span></td>

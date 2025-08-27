@@ -23,7 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 <div class="container mt-4">
     <div class="card">
         <div class="card-body">
-            <h5>Create Invoice</h5>
+            <h5><i class="bi bi-arrow-left-circle" title="Back" onclick="history.go(-1); return false;"></i> Create
+                Invoice</h5>
             <form method="post">
                 <div class="mb-3">
                     <label>Order</label>
@@ -52,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     <input type="date" name="due_date" class="form-control" required>
                 </div>
                 <button class="btn btn-primary">Save</button>
-                <a href="invoices.php" class="btn btn-secondary">Cancel</a>
+                <button title="Cancel" onclick="history.go(-1); return false;" class="btn btn-secondary">Cancel</button>
             </form>
         </div>
     </div>

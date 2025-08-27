@@ -3,18 +3,16 @@ include("../includes/auth.php");
 
 $error = "";
 
-// If already logged in, redirect to dashboard
 if (is_logged_in()) {
     header("Location: {$base_url}dashboard.php");
     exit();
 }
 
-// Process login form
 if ($_SERVER['REQUEST_METHOD'] === "POST") {
-    $username = trim($_POST['username']);
+    $name_email = trim($_POST['name-email']);
     $password = trim($_POST['password']);
 
-    if (login($username, $password)) {
+    if (login($name_email, $password)) {
         header("Location: {$base_url}dashboard.php");
         exit();
     } else {
@@ -44,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
                     <?php endif; ?>
 
                     <form method="post" novalidate>
-                        <input type="text" name="username" class="form-control mb-2" placeholder="Username" required>
+                        <input type="text" name="name-email" class="form-control mb-2" placeholder="Username or Email" required>
                         <input type="password" name="password" class="form-control mb-2" placeholder="Password"
                             required>
                         <button class="btn btn-primary w-100">Login</button>
