@@ -67,10 +67,10 @@ $lines = mysqli_query($conn, "SELECT * FROM rfq_lines WHERE rfq_id='$rfq_id'");
 ?>
 
 <div class="container mt-4">
+    <h4 class="card-title mb-3"><i class="bi bi-arrow-left-circle" title="Back"
+            onclick="history.go(-1); return false;"></i> Edit RFQ #<?= $rfq['id'] ?></h4>
     <div class="card shadow-sm border-0 mb-3">
         <div class="card-body">
-            <h5 class="card-title mb-3"><i class="bi bi-arrow-left-circle" title="Back"
-                    onclick="history.go(-1); return false;"></i> Edit RFQ #<?= $rfq['id'] ?></h5>
             <p><strong>Customer:</strong> <?= htmlspecialchars($rfq['customer_name']) ?></p>
             <p><strong>Status:</strong> <?= htmlspecialchars($rfq['status']) ?></p>
             <p><strong>Total:</strong> $<?= number_format($rfq['total_price'], 2) ?></p>

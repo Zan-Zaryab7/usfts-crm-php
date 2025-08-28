@@ -83,7 +83,7 @@ $rfqs = mysqli_query($conn, "SELECT * FROM rfqs ORDER BY id DESC");
 ?>
 
 <div class="container mt-4">
-    <h4><i class="bi bi-arrow-left-circle" title="Back" onclick="window.location='sales.php'"></i> New Sale</h4>
+    <h4><i class="bi bi-arrow-left-circle" title="Back" onclick="history.go(-1); return false;"></i> New Sale</h4>
     <form method="post" enctype="multipart/form-data" class="card shadow-sm border-0 p-3 mb-3">
         <div class="row g-3">
             <div class="col-md-6">

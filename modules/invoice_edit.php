@@ -30,9 +30,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 ?>
 
 <div class="container mt-4">
+    <h4><i class="bi bi-arrow-left-circle" title="Back" onclick="history.go(-1); return false;"></i> Edit Invoice
+        <?= htmlspecialchars($invoice['code']) ?>
+    </h4>
     <div class="card">
         <div class="card-body">
-            <h5><i class="bi bi-arrow-left-circle" title="Back" onclick="history.go(-1); return false;"></i> Edit Invoice <?= htmlspecialchars($invoice['code']) ?></h5>
             <form method="post">
                 <div class="mb-3">
                     <label>Order</label>
@@ -55,8 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 </div>
                 <div class="mb-3">
                     <label>Total Amount</label>
-                    <input type="number" min="0" step="0.01" name="total_amount" class="form-control"
-                        value="<?= $invoice['total_amount'] ?>" required>
+                    <input type="number" min="0" step="0.01" name="total_amount" id="total_amount" class="form-control"
+                        value="<?= $invoice['total_amount'] ?>" readonly>
                 </div>
                 <div class="mb-3">
                     <label>Due Date</label>
@@ -73,4 +75,18 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     </div>
 </div>
 
+<script>
+    document.querySelector("select[name=order_id]").addEventListener("change", function () {
+        let orderId = this.value;
+        if (orderId) {
+            fetch("get_order_total.php?order_id=" + orderId)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById("total_amount").value = data.total;
+                });
+        } else {
+            document.getElementById("total_amount").value = "";
+        }
+    });
+</script>
 <?php include("../templates/footer.php"); ?>

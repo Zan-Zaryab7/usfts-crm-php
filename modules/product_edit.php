@@ -36,10 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <div class="container mt-4">
+    <h4><i class="bi bi-arrow-left-circle" title="Back" onclick="history.go(-1); return false;"></i> Edit
+        Product</h4>
     <div class="card shadow-sm border-0">
         <div class="card-body">
-            <h5><i class="bi bi-arrow-left-circle" title="Back" onclick="history.go(-1); return false;"></i> Edit
-                Product</h5>
             <form method="post" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label class="form-label">Name</label>

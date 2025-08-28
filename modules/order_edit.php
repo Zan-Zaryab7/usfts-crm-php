@@ -67,9 +67,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 ?>
 
 <div class="container mt-4">
+    <h4><i class="bi bi-arrow-left-circle" title="Back" onclick="history.go(-1); return false;"></i> Edit Order
+        #<?= $order['code'] ?></h4>
     <div class="card">
         <div class="card-body">
-            <h5><i class="bi bi-arrow-left-circle" title="Back" onclick="history.go(-1); return false;"></i> Edit Order #<?= $order['code'] ?></h5>
             <form method="post">
                 <div class="mb-3">
                     <label>Customer</label>

@@ -23,10 +23,10 @@ if (isset($_POST['create_rfq'])) {
 ?>
 
 <div class="container mt-4">
+    <h4 class="card-title mb-3"><i class="bi bi-arrow-left-circle" title="Back"
+            onclick="history.go(-1); return false;"></i> Create New RFQ</h4>
     <div class="card shadow-sm border-0">
         <div class="card-body">
-            <h5 class="card-title mb-3"><i class="bi bi-arrow-left-circle" title="Back"
-                    onclick="history.go(-1); return false;"></i> Create New RFQ</h5>
             <form method="post">
                 <div class="mb-3">
                     <label>Customer</label>

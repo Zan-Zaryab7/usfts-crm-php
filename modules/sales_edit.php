@@ -125,7 +125,8 @@ $messages = mysqli_query($conn, "
 ?>
 
 <div class="container mt-4">
-    <h4><i class="bi bi-arrow-left-circle" title="Back" onclick="window.location='sales.php'"></i> Edit Sale #<?= $sale['id'] ?>
+    <h4><i class="bi bi-arrow-left-circle" title="Back" onclick="history.go(-1); return false;"></i> Edit Sale
+        #<?= $sale['id'] ?>
     </h4>
 
     <form method="post" class="card shadow-sm border-0 p-3 mb-3">
