@@ -7,14 +7,13 @@ check_auth();
 
 if (isset($_POST['add_customer'])) {
     $name = $_POST['name'];
-    $company = $_POST['company'];
+    $title = $_POST['title'];
     $email = $_POST['email'];
     $phone = $_POST['phone'];
-    $tax_id = $_POST['tax_id'];
     $address = $_POST['address'];
 
-    $q = "INSERT INTO customers (name,company,email,phone,tax_id,address) 
-          VALUES ('$name','$company','$email','$phone','$tax_id','$address')";
+    $q = "INSERT INTO customers (name,title,email,phone,address) 
+          VALUES ('$name','$title','$email','$phone','$address')";
     mysqli_query($conn, $q);
 }
 
@@ -42,10 +41,9 @@ $result = mysqli_query($conn, "SELECT * FROM customers ORDER BY id DESC");
                         <tr>
                             <th>Customer #</th>
                             <th>Name</th>
-                            <th>Company</th>
+                            <th>Title</th>
                             <th>Email</th>
                             <th>Phone</th>
-                            <th>Tax ID</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -54,10 +52,9 @@ $result = mysqli_query($conn, "SELECT * FROM customers ORDER BY id DESC");
                             <tr>
                                 <td><?= $c['code'] ?></td>
                                 <td><?= htmlspecialchars($c['name']) ?></td>
-                                <td><?= htmlspecialchars($c['company']) ?></td>
+                                <td><?= htmlspecialchars($c['title']) ?></td>
                                 <td><?= htmlspecialchars($c['email']) ?></td>
                                 <td><?= htmlspecialchars($c['phone']) ?></td>
-                                <td><?= htmlspecialchars($c['tax_id']) ?></td>
                                 <td>
                                     <a href="?delete=<?= $c['id'] ?>" class="btn btn-sm btn-outline-danger"
                                         onclick="return confirm('Delete this customer?');">
@@ -84,14 +81,12 @@ $result = mysqli_query($conn, "SELECT * FROM customers ORDER BY id DESC");
                 <div class="modal-body">
                     <div class="row g-3">
                         <div class="col-md-6"><input class="form-control" name="name" placeholder="Name" required></div>
-                        <div class="col-md-6"><input class="form-control" name="company" placeholder="Company" required>
+                        <div class="col-md-6"><input class="form-control" name="title" placeholder="Title" required>
                         </div>
                         <div class="col-md-6"><input class="form-control" type="email" name="email" placeholder="Email"
                                 required>
                         </div>
                         <div class="col-md-6"><input class="form-control" name="phone" placeholder="Phone" required>
-                        </div>
-                        <div class="col-md-6"><input class="form-control" name="tax_id" placeholder="Tax ID" required>
                         </div>
                         <div class="col-md-12"><textarea class="form-control" name="address" placeholder="Address"
                                 required></textarea></div>

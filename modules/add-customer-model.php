@@ -9,13 +9,11 @@
                 <div class="modal-body">
                     <div class="row g-3">
                         <div class="col-md-6"><input class="form-control" name="name" placeholder="Name" required></div>
-                        <div class="col-md-6"><input class="form-control" name="company" placeholder="Company" required>
+                        <div class="col-md-6"><input class="form-control" name="title" placeholder="Title" required>
                         </div>
                         <div class="col-md-6"><input class="form-control" type="email" name="email" placeholder="Email"
                                 required></div>
                         <div class="col-md-6"><input class="form-control" name="phone" placeholder="Phone" required>
-                        </div>
-                        <div class="col-md-6"><input class="form-control" name="tax_id" placeholder="Tax ID" required>
                         </div>
                         <div class="col-md-12"><textarea class="form-control" name="address" placeholder="Address"
                                 required></textarea></div>

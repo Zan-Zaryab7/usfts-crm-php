@@ -40,7 +40,7 @@ if (isset($_GET['delete'])) {
                     </thead>
                     <tbody>
                         <?php while ($r = mysqli_fetch_assoc($rfqs)) { ?>
-                            <tr style="cursor:pointer;" onclick="window.location='rfq_edit.php?id=<?= $r['id'] ?>'">
+                            <tr>
                                 <td><?= htmlspecialchars($r['code']) ?></td>
                                 <td><?= date("m/d/Y H:i", strtotime($r['created_at'])) ?></td>
                                 <td><?= htmlspecialchars($r['customer']) ?></td>
@@ -49,10 +49,20 @@ if (isset($_GET['delete'])) {
                                     <span class="badge bg-info"><?= $r['status'] ?></span>
                                 </td>
                                 <td>
-                                    <a href="?delete=<?= $r['id'] ?>" class="btn btn-sm btn-outline-danger"
-                                        onclick="return confirm('Delete this Qoutation?');">
-                                        Delete
+                                    <!-- <a href="#" onclick="window.print()" title="Print" class="btn btn-sm btn-outline-success">
+                                        <i class="bi bi-printer"></i>
+                                    </a> -->
+                                    <a href="#" onclick="window.location='rfq_edit.php?id=<?= $r['id'] ?>'" title="Edit"
+                                        class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil"></i>
                                     </a>
+                                    <a href="?delete=<?= $r['id'] ?>" title="Delete" class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('Delete this Qoutation?');">
+                                        <i class="bi bi-trash2"></i>
+                                    </a>
+                                    <!-- <a href="#" title="Order" class="btn btn-sm btn-outline-info">
+                                        <i class="bi bi-arrow-repeat"></i>
+                                    </a> -->
                                 </td>
                             </tr>
                         <?php } ?>

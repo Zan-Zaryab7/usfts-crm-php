@@ -5,14 +5,13 @@ check_auth();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
-    $company = $_POST['company'];
+    $title = $_POST['title'];
     $email = $_POST['email'];
     $phone = $_POST['phone'];
-    $tax_id = $_POST['tax_id'];
     $address = $_POST['address'];
 
-    $q = "INSERT INTO customers (name, company, email, phone, tax_id, address) 
-          VALUES ('$name','$company','$email','$phone','$tax_id','$address')";
+    $q = "INSERT INTO customers (name, title, email, phone, address) 
+          VALUES ('$name','$title','$email','$phone','$address')";
     if (mysqli_query($conn, $q)) {
         $id = mysqli_insert_id($conn);
         echo json_encode(["success" => true, "id" => $id, "name" => $name]);
