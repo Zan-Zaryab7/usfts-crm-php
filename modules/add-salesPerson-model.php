@@ -1,21 +1,21 @@
 <?php
-$customers = mysqli_query($conn, "SELECT * FROM customers");
+$salesPersons = mysqli_query($conn, "SELECT * FROM salesPerson");
 ?>
 
-<select class="form-control" name="customer_id" required>
-    <option value="">Select Customer</option>
-    <?php while ($c = mysqli_fetch_assoc($customers)) { ?>
+<select class="form-control" name="salesPerson_id" required>
+    <option value="">Select Sales Person</option>
+    <?php while ($c = mysqli_fetch_assoc($salesPersons)) { ?>
         <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['code']) ?> - <?= htmlspecialchars($c['name']) ?></option>
     <?php } ?>
-    <option value="add_new">- Add Customer -</option>
+    <option value="add_new">- Add Sales Person -</option>
 </select>
 
-<div class="modal fade" id="newCustomerModal" tabindex="-1">
+<div class="modal fade" id="newSalesPersonModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <form id="newCustomerForm">
+            <form id="newSalesPersonForm">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add New Customer</h5>
+                    <h5 class="modal-title">Add New Sales Person</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -27,8 +27,10 @@ $customers = mysqli_query($conn, "SELECT * FROM customers");
                                 required></div>
                         <div class="col-md-6"><input class="form-control" name="phone" placeholder="Phone" required>
                         </div>
-                        <div class="col-md-12"><textarea class="form-control" name="address" placeholder="Address"
-                                required></textarea></div>
+                        <div class="col-md-12">
+                            <label class="form-label">Signature</label>
+                            <input type="file" class="form-control" name="signature" accept="image/*">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -41,21 +43,21 @@ $customers = mysqli_query($conn, "SELECT * FROM customers");
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const customerSelect = document.querySelector("select[name='customer_id']");
-        const modal = document.getElementById("newCustomerModal");
+        const salesPersonSelect = document.querySelector("select[name='salesPerson_id']");
+        const modal = document.getElementById("newSalesPersonModal");
 
-        customerSelect.addEventListener("change", function () {
+        salesPersonSelect.addEventListener("change", function () {
             if (this.value === "add_new") {
                 this.value = "";
                 new bootstrap.Modal(modal).show();
             }
         });
 
-        document.getElementById("newCustomerForm").addEventListener("submit", function (e) {
+        document.getElementById("newSalesPersonForm").addEventListener("submit", function (e) {
             e.preventDefault();
             let formData = new FormData(this);
 
-            fetch("save-customer.php", {
+            fetch("save-salesPerson.php", {
                 method: "POST",
                 body: formData
             })
@@ -63,11 +65,11 @@ $customers = mysqli_query($conn, "SELECT * FROM customers");
                 .then(data => {
                     if (data.success) {
                         let option = new Option(data.name, data.id, true, true);
-                        customerSelect.add(option);
+                        salesPersonSelect.add(option);
                         bootstrap.Modal.getInstance(modal).hide();
                         this.reset();
                     } else {
-                        alert("Error saving customer");
+                        alert("Error saving Sales Person");
                     }
                 });
         });

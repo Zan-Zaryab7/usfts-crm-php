@@ -11,9 +11,21 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" href="/crm/public/dashboard.php">Dashboard</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="addDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Add
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="addDropdown">
+                        <li><a class="dropdown-item" href="/crm/modules/customers.php">Customers</a></li>
+                        <li><a class="dropdown-item" href="/crm/modules/salesPerson.php">Sales Person</a></li>
+                        <li><a class="dropdown-item" href="/crm/modules/billTo.php">Bill To</a></li>
+                        <li><a class="dropdown-item" href="/crm/modules/buyer.php">Buyer</a></li>
+                        <li><a class="dropdown-item" href="/crm/modules/shipTo.php">Ship To</a></li>
+                    </ul>
+                </li>
                 <li class="nav-item"><a class="nav-link" href="/crm/modules/sales.php">Sales</a></li>
                 <li class="nav-item"><a class="nav-link" href="/crm/modules/products.php">Products</a></li>
-                <li class="nav-item"><a class="nav-link" href="/crm/modules/customers.php">Customers</a></li>
                 <li class="nav-item"><a class="nav-link" href="/crm/modules/rfqs.php">RFQs</a></li>
                 <li class="nav-item"><a class="nav-link" href="/crm/modules/orders.php">Orders</a></li>
                 <li class="nav-item"><a class="nav-link" href="/crm/modules/invoices.php">Invoices</a></li>

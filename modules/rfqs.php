@@ -1,11 +1,11 @@
 <?php
-include("../config/database.php");
+// include("../config/database.php");
+include("../includes/auth.php");
 include("../templates/header.php");
 include("../templates/navbar.php");
-include("../includes/auth.php");
 check_auth();
 
-$rfqs = mysqli_query($conn, "SELECT r.id, r.code, r.created_at, r.status, r.total_price, c.name AS customer 
+$rfqs = mysqli_query($conn, "SELECT r.id, r.code, r.created_at, r.status, c.name AS customer 
                              FROM rfqs AS r 
                              JOIN customers c ON r.customer_id=c.id 
                              ORDER BY r.id DESC");
@@ -33,7 +33,7 @@ if (isset($_GET['delete'])) {
                             <th>RFQs #</th>
                             <th>Creation Date</th>
                             <th>Customer</th>
-                            <th>Total</th>
+                            <!-- <th>Total</th> -->
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -44,7 +44,7 @@ if (isset($_GET['delete'])) {
                                 <td><?= htmlspecialchars($r['code']) ?></td>
                                 <td><?= date("m/d/Y H:i", strtotime($r['created_at'])) ?></td>
                                 <td><?= htmlspecialchars($r['customer']) ?></td>
-                                <td><?= number_format($r['total_price'], 2) ?></td>
+                                <!-- <td></td> -->
                                 <td>
                                     <span class="badge bg-info"><?= $r['status'] ?></span>
                                 </td>

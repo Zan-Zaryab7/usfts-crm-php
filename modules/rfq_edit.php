@@ -1,8 +1,8 @@
 <?php
-include("../config/database.php");
+// include("../config/database.php");
+include("../includes/auth.php");
 include("../templates/header.php");
 include("../templates/navbar.php");
-include("../includes/auth.php");
 check_auth();
 
 $rfq_id = intval($_GET['id']);
@@ -73,7 +73,6 @@ $lines = mysqli_query($conn, "SELECT * FROM rfq_lines WHERE rfq_id='$rfq_id'");
         <div class="card-body">
             <p><strong>Customer:</strong> <?= htmlspecialchars($rfq['customer_name']) ?></p>
             <p><strong>Status:</strong> <?= htmlspecialchars($rfq['status']) ?></p>
-            <p><strong>Total:</strong> $<?= number_format($rfq['total_price'], 2) ?></p>
         </div>
     </div>
 

@@ -1,8 +1,8 @@
 <?php
-include("../config/database.php");
+// include("../config/database.php");
+include("../includes/auth.php");
 include("../templates/header.php");
 include("../templates/navbar.php");
-include("../includes/auth.php");
 check_auth();
 
 $orders = mysqli_query($conn, "SELECT o.id,o.code,c.name FROM orders o JOIN customers c ON o.customer_id=c.id");

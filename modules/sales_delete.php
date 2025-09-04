@@ -1,5 +1,5 @@
 <?php
-include("../config/database.php");
+// include("../config/database.php");
 include("../includes/auth.php");
 check_auth();
 

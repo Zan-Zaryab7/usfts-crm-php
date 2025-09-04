@@ -12,8 +12,6 @@
         @font-face {
             font-family: 'DancingScript';
             src: url('../assets/fonts/static/DancingScript-SemiBold.ttf') format('truetype');
-            /* font-weight: normal;
-        font-style: normal; */
         }
 
         .pdf-head-name {
@@ -23,11 +21,11 @@
             letter-spacing: 2px;
             color: #0d3483;
         }
-        
+
         .span-blue {
             color: #1a6493;
         }
-        
+
         .span-red {
             color: #c6265c;
         }
@@ -38,9 +36,48 @@
             letter-spacing: -3px;
         }
 
-        .pdf-head-title{
+        .pdf-head-title {
             font-size: 5em;
-            /* transform: translateY(-60px); */
+        }
+
+
+        .rfq-card {
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .rfq-header {
+            border-bottom: 3px solid #397099;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .rfq-table {
+            width: 100%;
+            min-width: 800px;
+            border-collapse: collapse;
+        }
+
+        .rfq-table th,
+        .rfq-table td {
+            padding: 8px;
+            vertical-align: top;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .desc-field input {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .desc-field strong {
+            display: block;
+            color: #397099;
         }
     </style>
 </head>

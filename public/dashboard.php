@@ -1,8 +1,8 @@
 <?php
+include("../includes/auth.php");
 include("../templates/header.php");
 include("../templates/navbar.php");
-include("../config/database.php");
-include("../includes/auth.php");
+// include("../config/database.php");
 check_auth();
 
 $total_customers = mysqli_fetch_row(mysqli_query($conn, "SELECT COUNT(*) FROM customers"))[0];
