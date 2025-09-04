@@ -50,9 +50,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_rfq'])) {
         }
     }
 
-    header("Location: rfqs.php");
+    echo "<script>window.location.href = 'rfqs.php';</script>";
     exit;
 }
+
+$customers = mysqli_query($conn, "SELECT * FROM customers");
+$shipTos = mysqli_query($conn, "SELECT * FROM shipTo");
+$buyers = mysqli_query($conn, "SELECT * FROM buyer");
+$billToList = mysqli_query($conn, "SELECT * FROM billTo");
+$salesPersons = mysqli_query($conn, "SELECT * FROM salesPerson");
 ?>
 
 <div class="container mt-4">
@@ -88,23 +94,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_rfq'])) {
                         <div class="row g-2">
                             <div class="col-6">
                                 <label class="form-label">RFQ Number</label>
-                                <input type="text" placeholder="Number" name="rfq_number" class="form-control">
+                                <input type="text" placeholder="Number" name="rfq_number" class="form-control" required>
                             </div>
                             <div class="col-6">
                                 <label class="form-label">RFQ Title</label>
-                                <input type="text" placeholder="Title" name="rfq_title" class="form-control">
+                                <input type="text" placeholder="Title" name="rfq_title" class="form-control" required>
                             </div>
                             <div class="col-6">
                                 <label class="form-label">Quote Date</label>
-                                <input type="date" name="quote_date" id="quote_date" class="form-control">
+                                <input type="date" name="quote_date" id="quote_date" class="form-control" required>
                             </div>
                             <div class="col-6">
                                 <label class="form-label">Quote Validity</label>
-                                <input type="text" name="validity" class="form-control" value="5 Months">
+                                <input type="text" name="validity" class="form-control" value="5 Months" required>
                             </div>
                             <div class="col-12">
                                 <label class="form-label">Lead Time (Days)</label>
-                                <input type="number" name="lead_time" class="form-control" min="0" value="5">
+                                <input type="number" name="lead_time" class="form-control" min="0" value="5" required>
                             </div>
                         </div>
                     </div>
@@ -116,27 +122,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_rfq'])) {
 
                             <div class="col-6">
                                 <label class="form-label">Customer</label>
-                                <?php include("add-customer-model.php"); ?>
+                                <select class="form-control" name="customer_id" required>
+                                    <option value="">Select Customer</option>
+                                    <?php while ($c = mysqli_fetch_assoc($customers)) { ?>
+                                        <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['code']) ?> -
+                                            <?= htmlspecialchars($c['name']) ?>
+                                        </option>
+                                    <?php } ?>
+                                    <option value="add_new">- Add Customer -</option>
+                                </select>
                             </div>
 
                             <div class="col-6">
                                 <label class="form-label">Sales Person</label>
-                                <?php include("add-salesPerson-model.php"); ?>
+                                <select class="form-control" name="salesPerson_id" required>
+                                    <option value="">Select Sales Person</option>
+                                    <?php while ($c = mysqli_fetch_assoc($salesPersons)) { ?>
+                                        <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['code']) ?> -
+                                            <?= htmlspecialchars($c['name']) ?>
+                                        </option>
+                                    <?php } ?>
+                                    <option value="add_new">- Add Sales Person -</option>
+                                </select>
                             </div>
 
                             <div class="col-6">
                                 <label class="form-label">Bill To</label>
-                                <?php include("add-billTo-model.php"); ?>
+                                <select class="form-control" name="billTo_id" required>
+                                    <option value="">Select Bill To</option>
+                                    <?php while ($b = mysqli_fetch_assoc($billToList)) { ?>
+                                        <option value="<?= $b['id'] ?>">
+                                            <?= htmlspecialchars($b['code']) ?> - <?= htmlspecialchars($b['title']) ?>
+                                        </option>
+                                    <?php } ?>
+                                    <option value="add_new">- Add Bill To -</option>
+                                </select>
                             </div>
 
                             <div class="col-6">
                                 <label class="form-label">Buyer</label>
-                                <?php include("add-buyer-model.php"); ?>
+                                <select class="form-control" name="buyer_id" required>
+                                    <option value="">Select Buyer</option>
+                                    <?php while ($b = mysqli_fetch_assoc($buyers)) { ?>
+                                        <option value="<?= $b['id'] ?>">
+                                            <?= htmlspecialchars($b['code']) ?> - <?= htmlspecialchars($b['name']) ?>
+                                        </option>
+                                    <?php } ?>
+                                    <option value="add_new">- Add Buyer -</option>
+                                </select>
                             </div>
 
                             <div class="col-12">
                                 <label class="form-label">Ship To</label>
-                                <?php include("add-shipTo-model.php"); ?>
+                                <select class="form-control" name="shipTo_id" required>
+                                    <option value="">Select Ship To</option>
+                                    <?php while ($st = mysqli_fetch_assoc($shipTos)) { ?>
+                                        <option value="<?= $st['id'] ?>">
+                                            <?= htmlspecialchars($st['code']) ?> - <?= htmlspecialchars($st['name']) ?>
+                                        </option>
+                                    <?php } ?>
+                                    <option value="add_new">- Add Ship To -</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -160,31 +206,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_rfq'])) {
                     <tbody>
                         <tr>
                             <td class="row-index">1</td>
-                            <td><input type="number" name="lines[0][qty]" min="0" class="form-control" value="1"></td>
-                            <td><input type="text" name="lines[0][unit]" class="form-control" value="Each"></td>
+                            <td><input type="number" name="lines[0][qty]" min="0" class="form-control" value="1"
+                                    required></td>
+                            <td><input type="text" name="lines[0][unit]" class="form-control" value="Each" required>
+                            </td>
                             <td>
                                 <div class="desc-field">
                                     <div class="row g-1">
                                         <div class="col-6 d-flex">PART: <input type="text" name="lines[0][part]"
-                                                class="border-0 ms-1"></div>
+                                                class="border-0 ms-1" required></div>
                                         <div class="col-6 d-flex">MFG: <input type="text" name="lines[0][mfg]"
-                                                class="border-0 ms-1"></div>
+                                                class="border-0 ms-1" required></div>
                                         <div class="col-6 d-flex">COO: <input type="text" name="lines[0][coo]"
-                                                class="border-0 ms-1"></div>
+                                                class="border-0 ms-1" required></div>
                                         <div class="col-6 d-flex">ECCN: <input type="text" name="lines[0][eccn]"
-                                                class="border-0 ms-1"></div>
+                                                class="border-0 ms-1" required></div>
                                         <div class="col-6 d-flex">CUST: <input type="text" name="lines[0][cust]"
-                                                class="border-0 ms-1"></div>
+                                                class="border-0 ms-1" required></div>
                                         <div class="col-6 d-flex">HTSUS: <input type="text" name="lines[0][htsus]"
-                                                class="border-0 ms-1"></div>
+                                                class="border-0 ms-1" required></div>
                                         <div class="col-12 d-flex">Desc: <input type="text" name="lines[0][desc]"
-                                                class="border-0 ms-1"></div>
+                                                class="border-0 ms-1" required></div>
                                     </div>
                                 </div>
                             </td>
                             <td><input type="number" step="0.01" min="0" name="lines[0][unit_price]"
-                                    class="form-control"></td>
-                            <td><input type="number" step="0.01" min="0" name="lines[0][total]" class="form-control">
+                                    class="form-control" required></td>
+                            <td><input type="number" step="0.01" min="0" name="lines[0][total]" class="form-control"
+                                    required>
                             </td>
                             <td><button type="button" class="btn btn-sm btn-outline-danger removeRow">X</button></td>
                         </tr>
@@ -245,4 +294,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_rfq'])) {
 </script>
 
 
+<?php include("add-customer-model.php"); ?>
+<?php include("add-salesPerson-model.php"); ?>
+<?php include("add-billTo-model.php"); ?>
+<?php include("add-buyer-model.php"); ?>
+<?php include("add-shipTo-model.php"); ?>
 <?php include("../templates/footer.php"); ?>

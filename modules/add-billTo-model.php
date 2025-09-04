@@ -1,17 +1,3 @@
-<?php
-$billToList = mysqli_query($conn, "SELECT * FROM billTo");
-?>
-
-<select class="form-control" name="billTo_id" required>
-    <option value="">Select Bill To</option>
-    <?php while ($b = mysqli_fetch_assoc($billToList)) { ?>
-        <option value="<?= $b['id'] ?>">
-            <?= htmlspecialchars($b['code']) ?> - <?= htmlspecialchars($b['title']) ?>
-        </option>
-    <?php } ?>
-    <option value="add_new">- Add Bill To -</option>
-</select>
-
 <div class="modal fade" id="newBillToModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">

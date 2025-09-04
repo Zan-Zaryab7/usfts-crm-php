@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 27, 2025 at 01:49 AM
+-- Generation Time: Sep 04, 2025 at 09:45 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -41,6 +41,74 @@ CREATE TABLE `audit_logs` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `billto`
+--
+
+CREATE TABLE `billto` (
+  `id` int(11) NOT NULL,
+  `code` varchar(20) DEFAULT NULL,
+  `title` varchar(150) NOT NULL,
+  `address` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `billto`
+--
+
+INSERT INTO `billto` (`id`, `code`, `title`, `address`, `created_at`) VALUES
+(2, 'BT00001', 'NCI Agency Headquarters', 'Boulevard Leopold III, 1110\r\nBrussels, Belgium', '2025-09-03 20:51:27');
+
+--
+-- Triggers `billto`
+--
+DELIMITER $$
+CREATE TRIGGER `trg_billto_code` BEFORE INSERT ON `billto` FOR EACH ROW BEGIN
+    IF NEW.code IS NULL OR NEW.code = '' THEN
+        SET NEW.code = CONCAT('BT', LPAD((SELECT IFNULL(MAX(id),0)+1 FROM billTo),5,'0'));
+    END IF;
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `buyer`
+--
+
+CREATE TABLE `buyer` (
+  `id` int(11) NOT NULL,
+  `code` varchar(20) DEFAULT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `phone` varchar(50) DEFAULT NULL,
+  `address` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `buyer`
+--
+
+INSERT INTO `buyer` (`id`, `code`, `name`, `email`, `phone`, `address`, `created_at`) VALUES
+(2, 'B00001', 'Bob', 'bob@gmail.com', '+1 654 234 5533', 'Blizzardian, Dion Foe, #123', '2025-09-03 21:19:21');
+
+--
+-- Triggers `buyer`
+--
+DELIMITER $$
+CREATE TRIGGER `trg_buyer_code` BEFORE INSERT ON `buyer` FOR EACH ROW BEGIN
+    IF NEW.code IS NULL OR NEW.code = '' THEN
+        SET NEW.code = CONCAT('B', LPAD((SELECT IFNULL(MAX(id),0)+1 FROM buyer),5,'0'));
+    END IF;
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `customers`
 --
 
@@ -48,10 +116,9 @@ CREATE TABLE `customers` (
   `id` int(11) NOT NULL,
   `code` varchar(20) DEFAULT NULL,
   `name` varchar(100) NOT NULL,
-  `company` varchar(150) DEFAULT NULL,
+  `title` varchar(150) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
   `phone` varchar(50) DEFAULT NULL,
-  `tax_id` varchar(50) DEFAULT NULL,
   `address` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -60,10 +127,11 @@ CREATE TABLE `customers` (
 -- Dumping data for table `customers`
 --
 
-INSERT INTO `customers` (`id`, `code`, `name`, `company`, `email`, `phone`, `tax_id`, `address`, `created_at`) VALUES
-(1, 'C00001', 'John Doe', 'Acme Inc', 'john@acme.com', '1234567890', 'TAX123', '123 Main St', '2025-08-21 21:38:24'),
-(2, 'C00002', 'Jane Smith', 'Tech Corp', 'jane@techcorp.com', '0987654321', 'TAX456', '45 Market St', '2025-08-21 21:38:24'),
-(11, 'C00003', 'Mark', 'Markus', 'mark@gmail.com', '1234567890', 'T0023', 'Abc, Xyz #985', '2025-08-23 18:48:55');
+INSERT INTO `customers` (`id`, `code`, `name`, `title`, `email`, `phone`, `address`, `created_at`) VALUES
+(1, 'C00001', 'John Doe', 'Acme Inc', 'john@acme.com', '1234567890', '123 Main St', '2025-08-21 21:38:24'),
+(2, 'C00002', 'Jane Smith', 'Tech Corp', 'jane@techcorp.com', '0987654321', '45 Market St', '2025-08-21 21:38:24'),
+(11, 'C00003', 'Mark', 'Markus', 'mark@gmail.com', '1234567890', 'Abc, Xyz #985', '2025-08-23 18:48:55'),
+(14, 'C00012', 'Will', 'Artist', 'will@gmail.com', '0123456789', 'William Shakesphern 123', '2025-09-02 23:08:51');
 
 --
 -- Triggers `customers`
@@ -107,14 +175,6 @@ CREATE TABLE `invoices` (
   `paid_date` date DEFAULT NULL,
   `created_at` date NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `invoices`
---
-
-INSERT INTO `invoices` (`id`, `code`, `order_id`, `status`, `total_amount`, `due_date`, `paid_date`, `created_at`) VALUES
-(8, 'I00008', 14, 'Sent', 1223.54, '2025-09-01', NULL, '2025-08-26'),
-(9, 'I00009', 12, 'Paid', 3823.34, '2025-09-04', '2025-08-31', '2025-08-26');
 
 --
 -- Triggers `invoices`
@@ -174,15 +234,6 @@ CREATE TABLE `orders` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `orders`
---
-
-INSERT INTO `orders` (`id`, `code`, `rfq_id`, `customer_id`, `status`, `tracking_number`, `total_cost`, `total_price`, `profit`, `margin`, `created_at`) VALUES
-(12, 'O00001', 20, 11, 'Completed', NULL, 20376.12, 34820.91, 14444.79, 41.48, '2025-08-26 20:26:10'),
-(13, 'O00013', 19, 2, 'Delivered', NULL, 510.46, 684.00, 173.54, 25.37, '2025-08-26 20:29:58'),
-(14, 'O00014', 20, 1, 'Pending', NULL, 14225.68, 22974.16, 8748.48, 38.08, '2025-08-26 20:30:24');
-
---
 -- Triggers `orders`
 --
 DELIMITER $$
@@ -209,23 +260,6 @@ CREATE TABLE `order_lines` (
   `cost_price` decimal(12,2) DEFAULT 0.00,
   `tracking_number` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `order_lines`
---
-
-INSERT INTO `order_lines` (`id`, `order_id`, `product`, `qty`, `unit_price`, `cost_price`, `tracking_number`) VALUES
-(112, 12, 'Prod 1', 6, 342.00, 255.23, NULL),
-(113, 12, 'Prod 2', 3, 565.53, 246.33, NULL),
-(114, 12, 'Prod 3', 11, 687.54, 354.23, NULL),
-(115, 12, 'Prod 4', 2, 5743.54, 3556.42, NULL),
-(116, 12, 'Prod 2', 2, 565.53, 246.33, NULL),
-(117, 12, 'Prod 4', 1, 5743.54, 3556.42, NULL),
-(118, 12, 'Prod 3', 5, 687.54, 354.23, NULL),
-(119, 12, 'Prod 1', 3, 342.00, 255.23, NULL),
-(120, 12, 'Prod 1', 2, 342.00, 255.23, NULL),
-(121, 13, 'Prod 1', 2, 342.00, 255.23, NULL),
-(122, 14, 'Prod 4', 4, 5743.54, 3556.42, NULL);
 
 -- --------------------------------------------------------
 
@@ -276,9 +310,17 @@ DELIMITER ;
 CREATE TABLE `rfqs` (
   `id` int(11) NOT NULL,
   `code` varchar(20) DEFAULT NULL,
-  `customer_id` int(11) NOT NULL,
+  `rfq_number` varchar(50) DEFAULT NULL,
+  `rfq_title` varchar(150) DEFAULT NULL,
+  `quote_date` date DEFAULT NULL,
+  `validity` varchar(50) DEFAULT '5 Months',
+  `lead_time` int(11) DEFAULT 0,
+  `customer_id` int(11) DEFAULT NULL,
+  `salesPerson_id` int(11) DEFAULT NULL,
+  `billTo_id` int(11) DEFAULT NULL,
+  `buyer_id` int(11) DEFAULT NULL,
+  `shipTo_id` int(11) DEFAULT NULL,
   `status` enum('Open','Won','Lost') DEFAULT 'Open',
-  `total_price` decimal(12,2) DEFAULT 0.00,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -286,9 +328,9 @@ CREATE TABLE `rfqs` (
 -- Dumping data for table `rfqs`
 --
 
-INSERT INTO `rfqs` (`id`, `code`, `customer_id`, `status`, `total_price`, `created_at`) VALUES
-(19, 'R00001', 2, 'Open', 234.00, '2025-08-26 20:17:34'),
-(20, 'R00020', 11, 'Open', 8543.00, '2025-08-26 20:17:44');
+INSERT INTO `rfqs` (`id`, `code`, `rfq_number`, `rfq_title`, `quote_date`, `validity`, `lead_time`, `customer_id`, `salesPerson_id`, `billTo_id`, `buyer_id`, `shipTo_id`, `status`, `created_at`) VALUES
+(23, 'R00023', '4252', 'RFQ MAIN', '2025-09-04', '5 Months', 5, 2, 4, 2, 2, 2, 'Open', '2025-09-04 17:03:51'),
+(27, 'R00024', '4564', 'Rfq', '2025-09-06', '2 Months', 8, 2, 4, 2, 2, 3, 'Open', '2025-09-04 19:39:58');
 
 --
 -- Triggers `rfqs`
@@ -311,22 +353,26 @@ DELIMITER ;
 CREATE TABLE `rfq_lines` (
   `id` int(11) NOT NULL,
   `rfq_id` int(11) NOT NULL,
-  `product` varchar(150) NOT NULL,
   `qty` int(11) NOT NULL DEFAULT 1,
+  `unit` varchar(50) DEFAULT 'Each',
+  `part` varchar(100) DEFAULT NULL,
+  `mfg` varchar(100) DEFAULT NULL,
+  `coo` varchar(50) DEFAULT NULL,
+  `eccn` varchar(50) DEFAULT NULL,
+  `cust` varchar(100) DEFAULT NULL,
+  `htsus` varchar(100) DEFAULT NULL,
+  `description` text DEFAULT NULL,
   `unit_price` decimal(12,2) DEFAULT 0.00,
-  `cost_price` decimal(12,2) DEFAULT 0.00,
-  `catalog_file` varchar(255) DEFAULT NULL
+  `total_price` decimal(12,2) DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `rfq_lines`
 --
 
-INSERT INTO `rfq_lines` (`id`, `rfq_id`, `product`, `qty`, `unit_price`, `cost_price`, `catalog_file`) VALUES
-(16, 20, 'Prod 1', 1, 342.00, 255.23, 'uploads/catalogs/1756239490_invoice.pdf'),
-(17, 20, 'Prod 2', 1, 342.00, 255.23, 'uploads/catalogs/1756239490_invoice.pdf'),
-(18, 20, 'Prod 3', 1, 687.54, 354.23, ''),
-(20, 20, 'Prod 4', 1, 5743.54, 3556.42, 'uploads/catalogs/1756239604_invoice.pdf');
+INSERT INTO `rfq_lines` (`id`, `rfq_id`, `qty`, `unit`, `part`, `mfg`, `coo`, `eccn`, `cust`, `htsus`, `description`, `unit_price`, `total_price`) VALUES
+(6, 23, 2, 'Each', '5383-TW-12-ND', 'Maury Microwave / TW-12', 'UNKNOWN', 'EAR99', 'NATO PO NO. 42521602', '9030.89.0100', 'Torque Wrench ', 358.00, 1432.00),
+(9, 27, 4, 'Each', '5383-TW-12-ND', 'Maury Microwave / TW-12', 'UNKNOWN', 'EAR99', 'NATO PO NO. 42521602', '9030.89.0100', 'Torque Wrench ', 235.00, 1235.00);
 
 -- --------------------------------------------------------
 
@@ -351,8 +397,8 @@ CREATE TABLE `sales` (
 --
 
 INSERT INTO `sales` (`id`, `code`, `bill_to`, `customer_id`, `delivery_in`, `rfq_id`, `title`, `expiration`, `created_at`) VALUES
-(18, 'S00001', 'Default Company', 11, '12 Days', 20, 'Sales RFQ 1', '2025-09-08', '2025-08-26 20:36:56'),
-(19, 'S00019', 'Default Company', 1, '4 Days', 20, 'Sales RFQ 1-2', '2025-08-30', '2025-08-26 20:38:56');
+(18, 'S00001', 'Default Company', 11, '12 Days', NULL, 'Sales RFQ 1', '2025-09-08', '2025-08-26 20:36:56'),
+(19, 'S00019', 'Default Company', 1, '4 Days', NULL, 'Sales RFQ 1-2', '2025-08-30', '2025-08-26 20:38:56');
 
 --
 -- Triggers `sales`
@@ -361,6 +407,42 @@ DELIMITER $$
 CREATE TRIGGER `trg_sales_code` BEFORE INSERT ON `sales` FOR EACH ROW BEGIN
     IF NEW.code IS NULL OR NEW.code = '' THEN
         SET NEW.code = CONCAT('S', LPAD((SELECT IFNULL(MAX(id),0)+1 FROM sales),5,'0'));
+    END IF;
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `salesperson`
+--
+
+CREATE TABLE `salesperson` (
+  `id` int(11) NOT NULL,
+  `code` varchar(20) DEFAULT NULL,
+  `name` varchar(100) NOT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `phone` varchar(50) DEFAULT NULL,
+  `signature` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `salesperson`
+--
+
+INSERT INTO `salesperson` (`id`, `code`, `name`, `title`, `email`, `phone`, `signature`, `created_at`) VALUES
+(4, 'SP00001', 'Alice', 'Procurement Manager', 'bids@usfts.us', '+1 619 918 5090', 'uploads/signatures/1756930450_alice-signature.png', '2025-09-03 20:14:10');
+
+--
+-- Triggers `salesperson`
+--
+DELIMITER $$
+CREATE TRIGGER `trg_salesPerson_code` BEFORE INSERT ON `salesperson` FOR EACH ROW BEGIN
+    IF NEW.code IS NULL OR NEW.code = '' THEN
+        SET NEW.code = CONCAT('SP', LPAD((SELECT IFNULL(MAX(id),0)+1 FROM salesPerson),5,'0'));
     END IF;
 END
 $$
@@ -392,6 +474,45 @@ INSERT INTO `sale_lines` (`id`, `sale_id`, `product_id`, `qty`, `unit_price`, `c
 (34, 18, 14, 2, 5743.54, 3556.42, 'uploads/catalogs/1756239604_invoice.pdf'),
 (35, 18, 16, 6, 345.00, 234.21, 'uploads/catalogs/1756240119_invoice.pdf'),
 (36, 19, 13, 7, 687.54, 354.23, '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `shipto`
+--
+
+CREATE TABLE `shipto` (
+  `id` int(11) NOT NULL,
+  `code` varchar(20) DEFAULT NULL,
+  `name` varchar(100) NOT NULL,
+  `company` varchar(150) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `phone` varchar(50) DEFAULT NULL,
+  `address` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `shipto`
+--
+
+INSERT INTO `shipto` (`id`, `code`, `name`, `company`, `email`, `phone`, `address`, `created_at`) VALUES
+(2, 'ST00002', 'Emily Johnson', 'Global Trade Ltd.', 'emily.j@globaltrade.com', '+1-555-5678', '456 Market Road, Los Angeles, CA 90015', '2025-09-03 21:06:46'),
+(3, 'ST00003', 'Michael Brown', 'Tech Supplies Inc.', 'm.brown@techsupplies.com', '+1-555-9012', '789 Silicon Valley Blvd, San Jose, CA 95110', '2025-09-03 21:06:46'),
+(4, 'ST00004', 'Sophia Davis', 'Logistics Partners', 'sophia.davis@logistics.com', '+1-555-3456', '321 Industrial Park, Dallas, TX 75201', '2025-09-03 21:06:46'),
+(5, 'ST00005', 'David Wilson', 'GreenWorld Exporters', 'd.wilson@greenworld.com', '+1-555-7890', '654 River Road, Miami, FL 33101', '2025-09-03 21:06:46');
+
+--
+-- Triggers `shipto`
+--
+DELIMITER $$
+CREATE TRIGGER `trg_shipto_code` BEFORE INSERT ON `shipto` FOR EACH ROW BEGIN
+    IF NEW.code IS NULL OR NEW.code = '' THEN
+        SET NEW.code = CONCAT('ST', LPAD((SELECT IFNULL(MAX(id),0)+1 FROM shipTo),5,'0'));
+    END IF;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -429,6 +550,18 @@ INSERT INTO `users` (`id`, `username`, `email`, `password`, `role`, `created_at`
 ALTER TABLE `audit_logs`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `billto`
+--
+ALTER TABLE `billto`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `buyer`
+--
+ALTER TABLE `buyer`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `customers`
@@ -487,8 +620,7 @@ ALTER TABLE `products`
 --
 ALTER TABLE `rfqs`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `code` (`code`),
-  ADD KEY `customer_id` (`customer_id`);
+  ADD UNIQUE KEY `code` (`code`);
 
 --
 -- Indexes for table `rfq_lines`
@@ -507,12 +639,24 @@ ALTER TABLE `sales`
   ADD KEY `rfq_id` (`rfq_id`);
 
 --
+-- Indexes for table `salesperson`
+--
+ALTER TABLE `salesperson`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `sale_lines`
 --
 ALTER TABLE `sale_lines`
   ADD PRIMARY KEY (`id`),
   ADD KEY `sale_id` (`sale_id`),
   ADD KEY `product_id` (`product_id`);
+
+--
+-- Indexes for table `shipto`
+--
+ALTER TABLE `shipto`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `users`
@@ -532,10 +676,22 @@ ALTER TABLE `audit_logs`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `billto`
+--
+ALTER TABLE `billto`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `buyer`
+--
+ALTER TABLE `buyer`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `expenses`
@@ -577,13 +733,13 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `rfqs`
 --
 ALTER TABLE `rfqs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `rfq_lines`
 --
 ALTER TABLE `rfq_lines`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `sales`
@@ -592,10 +748,22 @@ ALTER TABLE `sales`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
+-- AUTO_INCREMENT for table `salesperson`
+--
+ALTER TABLE `salesperson`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `sale_lines`
 --
 ALTER TABLE `sale_lines`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+
+--
+-- AUTO_INCREMENT for table `shipto`
+--
+ALTER TABLE `shipto`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -643,12 +811,6 @@ ALTER TABLE `orders`
 --
 ALTER TABLE `order_lines`
   ADD CONSTRAINT `order_lines_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `rfqs`
---
-ALTER TABLE `rfqs`
-  ADD CONSTRAINT `rfqs_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `rfq_lines`

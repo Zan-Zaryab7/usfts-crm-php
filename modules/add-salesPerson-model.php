@@ -1,15 +1,3 @@
-<?php
-$salesPersons = mysqli_query($conn, "SELECT * FROM salesPerson");
-?>
-
-<select class="form-control" name="salesPerson_id" required>
-    <option value="">Select Sales Person</option>
-    <?php while ($c = mysqli_fetch_assoc($salesPersons)) { ?>
-        <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['code']) ?> - <?= htmlspecialchars($c['name']) ?></option>
-    <?php } ?>
-    <option value="add_new">- Add Sales Person -</option>
-</select>
-
 <div class="modal fade" id="newSalesPersonModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">

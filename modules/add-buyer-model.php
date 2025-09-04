@@ -1,17 +1,3 @@
-<?php
-$buyers = mysqli_query($conn, "SELECT * FROM buyer");
-?>
-
-<select class="form-control" name="buyer_id" required>
-    <option value="">Select Buyer</option>
-    <?php while ($b = mysqli_fetch_assoc($buyers)) { ?>
-        <option value="<?= $b['id'] ?>">
-            <?= htmlspecialchars($b['code']) ?> - <?= htmlspecialchars($b['name']) ?>
-        </option>
-    <?php } ?>
-    <option value="add_new">- Add Buyer -</option>
-</select>
-
 <div class="modal fade" id="newBuyerModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">

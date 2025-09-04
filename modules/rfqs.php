@@ -1,18 +1,24 @@
 <?php
-// include("../config/database.php");
 include("../includes/auth.php");
 include("../templates/header.php");
 include("../templates/navbar.php");
 check_auth();
 
-$rfqs = mysqli_query($conn, "SELECT r.id, r.code, r.created_at, r.status, c.name AS customer 
+$rfqs = mysqli_query($conn, "SELECT r.*, c.name AS customer, sp.name AS salesPerson, bt.title AS billTo, b.name AS buyer, st.name AS shipTo
                              FROM rfqs AS r 
-                             JOIN customers c ON r.customer_id=c.id 
+                             JOIN customers c ON r.customer_id=c.id
+                             JOIN salesperson sp ON r.salesPerson_id=sp.id
+                             JOIN billto bt ON r.billTo_id=bt.id
+                             JOIN buyer b ON r.buyer_id=b.id
+                             JOIN shipto st ON r.shipTo_id=st.id
                              ORDER BY r.id DESC");
 
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
     mysqli_query($conn, "DELETE FROM rfqs WHERE id='$id'");
+
+    echo "<script>window.location.href = 'rfqs.php';</script>";
+    exit;
 }
 ?>
 
@@ -27,13 +33,18 @@ if (isset($_GET['delete'])) {
     <div class="card shadow-sm border-0">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover align-middle">
+                <table class="table table-sm table-hover align-middle">
                     <thead class="table-light">
                         <tr>
                             <th>RFQs #</th>
-                            <th>Creation Date</th>
+                            <th>Title</th>
                             <th>Customer</th>
-                            <!-- <th>Total</th> -->
+                            <th>Sales Person</th>
+                            <th>Bill To</th>
+                            <th>Buyer</th>
+                            <th>Ship To</th>
+                            <th>Validity</th>
+                            <th>Creation Date</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
@@ -41,17 +52,51 @@ if (isset($_GET['delete'])) {
                     <tbody>
                         <?php while ($r = mysqli_fetch_assoc($rfqs)) { ?>
                             <tr>
-                                <td><?= htmlspecialchars($r['code']) ?></td>
-                                <td><?= date("m/d/Y H:i", strtotime($r['created_at'])) ?></td>
+                                <td><?= htmlspecialchars($r['rfq_number']) ?></td>
+                                <td><?= htmlspecialchars($r['rfq_title']) ?></td>
                                 <td><?= htmlspecialchars($r['customer']) ?></td>
-                                <!-- <td></td> -->
+                                <td><?= htmlspecialchars($r['salesPerson']) ?></td>
+                                <td><?= htmlspecialchars($r['billTo']) ?></td>
+                                <td><?= htmlspecialchars($r['buyer']) ?></td>
+                                <td><?= htmlspecialchars($r['shipTo']) ?></td>
+                                <td>
+                                    <?php
+                                    $quoteDate = new DateTime($r['quote_date']);
+
+                                    $validityStr = strtolower(trim($r['validity']));
+                                    $validityInterval = null;
+
+                                    if (strpos($validityStr, 'month') !== false) {
+                                        $months = (int) filter_var($validityStr, FILTER_SANITIZE_NUMBER_INT);
+                                        $validityInterval = new DateInterval("P{$months}M");
+                                    } elseif (strpos($validityStr, 'day') !== false) {
+                                        $days = (int) filter_var($validityStr, FILTER_SANITIZE_NUMBER_INT);
+                                        $validityInterval = new DateInterval("P{$days}D");
+                                    }
+
+                                    if ($validityInterval) {
+                                        $expiryDate = (clone $quoteDate)->add($validityInterval);
+                                        $today = new DateTime();
+                                        $daysLeft = $today->diff($expiryDate)->days;
+
+                                        if ($today > $expiryDate) {
+                                            echo "<span class='text-danger'>Expired</span>";
+                                        } else {
+                                            echo $daysLeft . " days left";
+                                        }
+                                    } else {
+                                        echo "N/A";
+                                    }
+                                    ?>
+                                </td>
+                                <td><?= date("m/d/Y H:i", strtotime($r['created_at'])) ?></td>
                                 <td>
                                     <span class="badge bg-info"><?= $r['status'] ?></span>
                                 </td>
                                 <td>
-                                    <!-- <a href="#" onclick="window.print()" title="Print" class="btn btn-sm btn-outline-success">
+                                    <a href="#" onclick="window.location='rfq-pdf.php?id=<?= $r['id'] ?>'" title="Print" class="btn btn-sm btn-outline-success">
                                         <i class="bi bi-printer"></i>
-                                    </a> -->
+                                    </a>
                                     <a href="#" onclick="window.location='rfq_edit.php?id=<?= $r['id'] ?>'" title="Edit"
                                         class="btn btn-sm btn-outline-primary">
                                         <i class="bi bi-pencil"></i>

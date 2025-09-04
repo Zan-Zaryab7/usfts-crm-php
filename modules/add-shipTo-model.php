@@ -1,17 +1,3 @@
-<?php
-$shipTos = mysqli_query($conn, "SELECT * FROM shipTo");
-?>
-
-<select class="form-control" name="shipTo_id" required>
-    <option value="">Select Ship To</option>
-    <?php while ($st = mysqli_fetch_assoc($shipTos)) { ?>
-        <option value="<?= $st['id'] ?>">
-            <?= htmlspecialchars($st['code']) ?> - <?= htmlspecialchars($st['name']) ?>
-        </option>
-    <?php } ?>
-    <option value="add_new">- Add Ship To -</option>
-</select>
-
 <div class="modal fade" id="newShipToModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">

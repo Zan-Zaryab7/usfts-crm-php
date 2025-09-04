@@ -1,5 +1,4 @@
 <?php
-// include("../config/database.php");
 include("../includes/auth.php");
 include("../templates/header.php");
 include("../templates/navbar.php");
@@ -21,7 +20,7 @@ if (isset($_GET['delete'])) {
 <div class="container-fluid mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3 px-2">
         <h4>Orders</h4>
-        <a href="order_add.php" class="btn btn-primary">New Order</a>
+        <!-- <a href="order_add.php" class="btn btn-primary">New Order</a> -->
     </div>
 
     <div class="card shadow-sm border-0">

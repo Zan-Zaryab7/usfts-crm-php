@@ -1,15 +1,3 @@
-<?php
-$customers = mysqli_query($conn, "SELECT * FROM customers");
-?>
-
-<select class="form-control" name="customer_id" required>
-    <option value="">Select Customer</option>
-    <?php while ($c = mysqli_fetch_assoc($customers)) { ?>
-        <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['code']) ?> - <?= htmlspecialchars($c['name']) ?></option>
-    <?php } ?>
-    <option value="add_new">- Add Customer -</option>
-</select>
-
 <div class="modal fade" id="newCustomerModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
