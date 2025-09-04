@@ -16,43 +16,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_rfq'])) {
     $buyer_id = (int) $_POST['buyer_id'];
     $shipTo_id = (int) $_POST['shipTo_id'];
 
-    $q = "INSERT INTO rfqs 
-            (rfq_number, rfq_title, quote_date, validity, lead_time, 
-             customer_id, salesPerson_id, billTo_id, buyer_id, shipTo_id, 
-             status, created_at)
-          VALUES 
-            ('$rfq_number', '$rfq_title', '$quote_date', '$validity', '$lead_time',
-             '$customer_id', '$salesPerson_id', '$billTo_id', '$buyer_id', '$shipTo_id',
-             'Open', NOW())";
+    $check = mysqli_query($conn, "SELECT id FROM rfqs WHERE rfq_number = '$rfq_number' LIMIT 1");
+    if (mysqli_num_rows($check) > 0) {
+        echo "<div class='alert alert-danger text-center'>RFQ number must be unique.</div>";
+    } else {
+        $q = "INSERT INTO rfqs 
+                (rfq_number, rfq_title, quote_date, validity, lead_time, 
+                 customer_id, salesPerson_id, billTo_id, buyer_id, shipTo_id, 
+                 status, created_at)
+              VALUES 
+                ('$rfq_number', '$rfq_title', '$quote_date', '$validity', '$lead_time',
+                 '$customer_id', '$salesPerson_id', '$billTo_id', '$buyer_id', '$shipTo_id',
+                 'Open', NOW())";
 
-    mysqli_query($conn, $q) or die("RFQ Insert Error: " . mysqli_error($conn));
-    $rfq_id = mysqli_insert_id($conn);
+        mysqli_query($conn, $q) or die("RFQ Insert Error: " . mysqli_error($conn));
+        $rfq_id = mysqli_insert_id($conn);
 
-    if (!empty($_POST['lines'])) {
-        foreach ($_POST['lines'] as $line) {
-            $qty = (int) $line['qty'];
-            $unit = mysqli_real_escape_string($conn, $line['unit']);
-            $part = mysqli_real_escape_string($conn, $line['part']);
-            $mfg = mysqli_real_escape_string($conn, $line['mfg']);
-            $coo = mysqli_real_escape_string($conn, $line['coo']);
-            $eccn = mysqli_real_escape_string($conn, $line['eccn']);
-            $cust = mysqli_real_escape_string($conn, $line['cust']);
-            $htsus = mysqli_real_escape_string($conn, $line['htsus']);
-            $desc = mysqli_real_escape_string($conn, $line['desc']);
-            $unit_price = (float) $line['unit_price'];
-            $total = (float) $line['total'];
+        if (!empty($_POST['lines'])) {
+            foreach ($_POST['lines'] as $line) {
+                $qty = (int) $line['qty'];
+                $unit = mysqli_real_escape_string($conn, $line['unit']);
+                $part = mysqli_real_escape_string($conn, $line['part']);
+                $mfg = mysqli_real_escape_string($conn, $line['mfg']);
+                $coo = mysqli_real_escape_string($conn, $line['coo']);
+                $eccn = mysqli_real_escape_string($conn, $line['eccn']);
+                $cust = mysqli_real_escape_string($conn, $line['cust']);
+                $htsus = mysqli_real_escape_string($conn, $line['htsus']);
+                $desc = mysqli_real_escape_string($conn, $line['desc']);
+                $unit_price = (float) $line['unit_price'];
+                $total = (float) $line['total'];
 
-            $line_q = "INSERT INTO rfq_lines 
-                        (rfq_id, qty, unit, part, mfg, coo, eccn, cust, htsus, description, unit_price, total_price)
-                       VALUES
-                        ('$rfq_id','$qty','$unit','$part','$mfg','$coo','$eccn','$cust','$htsus','$desc','$unit_price','$total')";
-            mysqli_query($conn, $line_q) or die("RFQ Line Insert Error: " . mysqli_error($conn));
+                $line_q = "INSERT INTO rfq_lines 
+                            (rfq_id, qty, unit, part, mfg, coo, eccn, cust, htsus, description, unit_price, total_price)
+                           VALUES
+                            ('$rfq_id','$qty','$unit','$part','$mfg','$coo','$eccn','$cust','$htsus','$desc','$unit_price','$total')";
+                mysqli_query($conn, $line_q) or die("RFQ Line Insert Error: " . mysqli_error($conn));
+            }
         }
-    }
 
-    echo "<script>window.location.href = 'rfqs.php';</script>";
-    exit;
+        echo "<script>window.location.href = 'rfqs.php';</script>";
+        exit;
+    }
 }
+
 
 $customers = mysqli_query($conn, "SELECT * FROM customers");
 $shipTos = mysqli_query($conn, "SELECT * FROM shipTo");
@@ -254,8 +260,12 @@ $salesPersons = mysqli_query($conn, "SELECT * FROM salesPerson");
 
 <script>
     const quote_datePickerId = document.getElementById('quote_date');
-    quote_datePickerId.min = new Date().toISOString().split("T")[0];
+    const today = new Date().toISOString().split("T")[0];
+    quote_datePickerId.value = today;
+    quote_datePickerId.min = today;
+    quote_datePickerId.max = today;
 </script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const table = document.getElementById("lineItemsTable").getElementsByTagName("tbody")[0];

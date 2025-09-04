@@ -23,6 +23,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_rfq'])) {
     $buyer_id = (int) $_POST['buyer_id'];
     $shipTo_id = (int) $_POST['shipTo_id'];
 
+    $check = mysqli_query($conn, "SELECT id FROM rfqs WHERE rfq_number = '$rfq_number' LIMIT 1");
+    if (mysqli_num_rows($check) > 0) {
+        echo "<div class='alert alert-danger text-center'>RFQ number must be unique.</div>";
+    } else {
     $q = "UPDATE rfqs SET 
             rfq_number='$rfq_number',
             rfq_title='$rfq_title',
@@ -64,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_rfq'])) {
 
     echo "<script>window.location.href = 'rfqs.php';</script>";
     exit;
+}
 }
 
 $customers = mysqli_query($conn, "SELECT * FROM customers");
@@ -257,9 +262,13 @@ $lines = mysqli_query($conn, "SELECT * FROM rfq_lines WHERE rfq_id='$rfq_id'");
     </div>
 </div>
 
+
 <script>
     const quote_datePickerId = document.getElementById('quote_date');
-    quote_datePickerId.min = new Date().toISOString().split("T")[0];
+    const today = new Date().toISOString().split("T")[0];
+    quote_datePickerId.value = today;
+    quote_datePickerId.min = today;
+    quote_datePickerId.max = today;
 </script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
