@@ -8,16 +8,16 @@ if (isset($_POST['add_billTo'])) {
     $title = mysqli_real_escape_string($conn, $_POST['title']);
     $address = mysqli_real_escape_string($conn, $_POST['address']);
 
-    $q = "INSERT INTO billTo (title, address) VALUES ('$title','$address')";
+    $q = "INSERT INTO billto (title, address) VALUES ('$title','$address')";
     mysqli_query($conn, $q);
 }
 
 if (isset($_GET['delete'])) {
     $id = (int) $_GET['delete'];
-    mysqli_query($conn, "DELETE FROM billTo WHERE id='$id'");
+    mysqli_query($conn, "DELETE FROM billto WHERE id='$id'");
 }
 
-$result = mysqli_query($conn, "SELECT * FROM billTo ORDER BY id DESC");
+$result = mysqli_query($conn, "SELECT * FROM billto ORDER BY id DESC");
 ?>
 
 <div class="container-fluid mt-4">

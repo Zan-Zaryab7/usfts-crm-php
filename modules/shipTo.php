@@ -11,17 +11,17 @@ if (isset($_POST['add_shipTo'])) {
     $phone = mysqli_real_escape_string($conn, $_POST['phone']);
     $address = mysqli_real_escape_string($conn, $_POST['address']);
 
-    $q = "INSERT INTO shipTo (name, company, email, phone, address) 
+    $q = "INSERT INTO shipto (name, company, email, phone, address) 
           VALUES ('$name','$company','$email','$phone','$address')";
     mysqli_query($conn, $q);
 }
 
 if (isset($_GET['delete'])) {
     $id = (int) $_GET['delete'];
-    mysqli_query($conn, "DELETE FROM shipTo WHERE id='$id'");
+    mysqli_query($conn, "DELETE FROM shipto WHERE id='$id'");
 }
 
-$result = mysqli_query($conn, "SELECT * FROM shipTo ORDER BY id DESC");
+$result = mysqli_query($conn, "SELECT * FROM shipto ORDER BY id DESC");
 ?>
 
 <div class="container-fluid mt-4">

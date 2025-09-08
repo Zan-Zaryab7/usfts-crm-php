@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_rfq'])) {
     $quote_date = mysqli_real_escape_string($conn, $_POST['quote_date']);
     $validity = mysqli_real_escape_string($conn, $_POST['validity']);
     $lead_time = (int) $_POST['lead_time'];
+    $shipping = (float) $_POST['shipping'];
     $customer_id = (int) $_POST['customer_id'];
     $salesPerson_id = (int) $_POST['salesPerson_id'];
     $billTo_id = (int) $_POST['billTo_id'];
@@ -21,11 +22,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_rfq'])) {
         echo "<div class='alert alert-danger text-center'>RFQ number must be unique.</div>";
     } else {
         $q = "INSERT INTO rfqs 
-                (rfq_number, rfq_title, quote_date, validity, lead_time, 
+                (rfq_number, rfq_title, quote_date, validity, lead_time, shipping,
                  customer_id, salesPerson_id, billTo_id, buyer_id, shipTo_id, 
                  status, created_at)
               VALUES 
-                ('$rfq_number', '$rfq_title', '$quote_date', '$validity', '$lead_time',
+                ('$rfq_number', '$rfq_title', '$quote_date', '$validity', '$lead_time', '$shipping'
                  '$customer_id', '$salesPerson_id', '$billTo_id', '$buyer_id', '$shipTo_id',
                  'Open', NOW())";
 
@@ -61,10 +62,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_rfq'])) {
 
 
 $customers = mysqli_query($conn, "SELECT * FROM customers");
-$shipTos = mysqli_query($conn, "SELECT * FROM shipTo");
+$shipTos = mysqli_query($conn, "SELECT * FROM shipto");
 $buyers = mysqli_query($conn, "SELECT * FROM buyer");
-$billToList = mysqli_query($conn, "SELECT * FROM billTo");
-$salesPersons = mysqli_query($conn, "SELECT * FROM salesPerson");
+$billToList = mysqli_query($conn, "SELECT * FROM billto");
+$salesPersons = mysqli_query($conn, "SELECT * FROM salesperson");
 ?>
 
 <div class="container mt-4">
@@ -114,9 +115,13 @@ $salesPersons = mysqli_query($conn, "SELECT * FROM salesPerson");
                                 <label class="form-label">Quote Validity</label>
                                 <input type="text" name="validity" class="form-control" value="5 Months" required>
                             </div>
-                            <div class="col-12">
+                            <div class="col-6">
                                 <label class="form-label">Lead Time (Days)</label>
                                 <input type="number" name="lead_time" class="form-control" min="0" value="5" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">Shipping (Optional)</label>
+                                <input type="number" placeholder="Shipping" value="0" step="0.01" min="0" name="shipping" class="form-control">
                             </div>
                         </div>
                     </div>

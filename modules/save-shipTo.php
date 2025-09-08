@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     $address = trim($_POST['address']);
 
     if (!empty($name)) {
-        $q = "INSERT INTO shipTo (name, company, email, phone, address) 
+        $q = "INSERT INTO shipto (name, company, email, phone, address) 
               VALUES ('$name', '$company', '$email', '$phone', '$address')";
 
         if (mysqli_query($conn, $q)) {

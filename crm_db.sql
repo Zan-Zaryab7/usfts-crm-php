@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 04, 2025 at 09:45 PM
+-- Generation Time: Sep 09, 2025 at 01:11 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -315,6 +315,7 @@ CREATE TABLE `rfqs` (
   `quote_date` date DEFAULT NULL,
   `validity` varchar(50) DEFAULT '5 Months',
   `lead_time` int(11) DEFAULT 0,
+  `shipping` decimal(12,2) NOT NULL,
   `customer_id` int(11) DEFAULT NULL,
   `salesPerson_id` int(11) DEFAULT NULL,
   `billTo_id` int(11) DEFAULT NULL,
@@ -328,9 +329,10 @@ CREATE TABLE `rfqs` (
 -- Dumping data for table `rfqs`
 --
 
-INSERT INTO `rfqs` (`id`, `code`, `rfq_number`, `rfq_title`, `quote_date`, `validity`, `lead_time`, `customer_id`, `salesPerson_id`, `billTo_id`, `buyer_id`, `shipTo_id`, `status`, `created_at`) VALUES
-(23, 'R00023', '4252', 'RFQ MAIN', '2025-09-04', '5 Months', 5, 2, 4, 2, 2, 2, 'Open', '2025-09-04 17:03:51'),
-(27, 'R00024', '4564', 'Rfq', '2025-09-06', '2 Months', 8, 2, 4, 2, 2, 3, 'Open', '2025-09-04 19:39:58');
+INSERT INTO `rfqs` (`id`, `code`, `rfq_number`, `rfq_title`, `quote_date`, `validity`, `lead_time`, `shipping`, `customer_id`, `salesPerson_id`, `billTo_id`, `buyer_id`, `shipTo_id`, `status`, `created_at`) VALUES
+(23, 'R00023', '4252', 'RFQ MAIN', '2025-09-04', '5 Months', 5, 0.00, 2, 4, 2, 2, 2, 'Open', '2025-09-04 17:03:51'),
+(27, 'R00024', '4564', 'Rfq', '2025-09-06', '2 Months', 8, 0.00, 2, 4, 2, 2, 3, 'Open', '2025-09-04 19:39:58'),
+(28, 'R00028', '9789', 'Rfq Pdf', '2025-09-08', '1 Months', 10, 45.79, 14, 4, 2, 2, 2, 'Open', '2025-09-04 19:58:22');
 
 --
 -- Triggers `rfqs`
@@ -372,7 +374,8 @@ CREATE TABLE `rfq_lines` (
 
 INSERT INTO `rfq_lines` (`id`, `rfq_id`, `qty`, `unit`, `part`, `mfg`, `coo`, `eccn`, `cust`, `htsus`, `description`, `unit_price`, `total_price`) VALUES
 (6, 23, 2, 'Each', '5383-TW-12-ND', 'Maury Microwave / TW-12', 'UNKNOWN', 'EAR99', 'NATO PO NO. 42521602', '9030.89.0100', 'Torque Wrench ', 358.00, 1432.00),
-(9, 27, 4, 'Each', '5383-TW-12-ND', 'Maury Microwave / TW-12', 'UNKNOWN', 'EAR99', 'NATO PO NO. 42521602', '9030.89.0100', 'Torque Wrench ', 235.00, 1235.00);
+(9, 27, 4, 'Each', '5383-TW-12-ND', 'Maury Microwave / TW-12', 'UNKNOWN', 'EAR99', 'NATO PO NO. 42521602', '9030.89.0100', 'Torque Wrench ', 235.00, 1235.00),
+(12, 28, 5, 'Each', '5383-TW-12-ND', 'Maury Microwave / TW-12', 'UNKNOWN', 'EAR99', 'NATO PO NO. 42521602', '9030.89.0100', 'Torque Wrench ', 375.00, 1250.00);
 
 -- --------------------------------------------------------
 
@@ -733,13 +736,13 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `rfqs`
 --
 ALTER TABLE `rfqs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `rfq_lines`
 --
 ALTER TABLE `rfq_lines`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `sales`

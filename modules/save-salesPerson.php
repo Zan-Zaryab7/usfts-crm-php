@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    $q = "INSERT INTO salesPerson (name, title, email, phone, signature) 
+    $q = "INSERT INTO salesperson (name, title, email, phone, signature) 
           VALUES ('$name','$title','$email','$phone','$signaturePath')";
 
     if (mysqli_query($conn, $q)) {

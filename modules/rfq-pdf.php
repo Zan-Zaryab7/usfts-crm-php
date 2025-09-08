@@ -1,5 +1,6 @@
 <?php
 include("../includes/auth.php");
+// include("../templates/header.php");
 check_auth();
 require '../vendor/autoload.php';
 
@@ -72,12 +73,14 @@ ob_start();
     }
 
     .company-info {
+        display: flex;
         max-width: 300px;
+        font-size: 14px;
     }
 
     .support-info {
         text-align: right;
-        font-size: 12px;
+        font-size: 14px;
     }
 
     .quote-title {
@@ -88,22 +91,25 @@ ob_start();
     }
 
     .details-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        /* display: grid; */
+        /* grid-template-columns: 1fr 1fr 1fr; */
+        display: flex;
+        justify-content: space-between;
         gap: 15px;
         margin-bottom: 15px;
     }
 
     .details-box {
-        border: 1px solid #000;
+        /* border: 1px solid #000; */
         padding: 8px;
         min-height: 70px;
+        font-size: 14px;
     }
 
     .quote-info {
-        border: 1px solid #000;
+        /* border: 1px solid #000; */
         padding: 8px;
-        font-size: 12px;
+        font-size: 14px;
         margin-top: 10px;
     }
 
@@ -121,7 +127,7 @@ ob_start();
     .quote-table td {
         border: 1px solid #000;
         padding: 6px;
-        font-size: 12px;
+        font-size: 14px;
     }
 
     .quote-table th {
@@ -143,14 +149,28 @@ ob_start();
     .signature img {
         height: 60px;
     }
+
+    .watermark {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-15deg);
+        font-size: 3.4rem;
+        color: rgba(0, 0, 0, 0.06);
+        white-space: nowrap;
+        pointer-events: none;
+        user-select: none;
+    }
 </style>
+
+<div class="watermark">U.S. Forces Tactical Supply</div>
 
 <div class="quote-container">
 
     <div class="quote-header">
         <div class="company-info">
             <img src="https://novaascenddynamics.com/crm/assets/USFTS.png" alt="Logo">
-            <p>U.S. Forces Tactical Supply<br>
+            <p><b>U.S. Forces Tactical Supply</b><br>
                 15870 Camino San Bernardo<br>
                 San Diego, CA 92127, USA<br>
                 UEI: KQM1HHYLHR5<br>
@@ -164,7 +184,7 @@ ob_start();
         </div>
     </div>
 
-    <div class="quote-title">Request For Quotation</div>
+    <div class="quote-title">Quotation Number: <?= htmlspecialchars($rfq['code']) ?></div>
 
     <div class="details-row">
         <div class="details-box">
@@ -190,87 +210,100 @@ ob_start();
     </div>
 
     <div class="quote-info">
-        <p><strong>Quote Number:</strong> <?= htmlspecialchars($rfq['code']) ?></p>
-        <p>RFQ Number: <?= htmlspecialchars($rfq['rfq_number']) ?></p>
-        <p>RFQ Title: <?= htmlspecialchars($rfq['rfq_title']) ?></p>
-        <p>Quote Date: <?= date("F d, Y", strtotime($rfq['quote_date'])) ?></p>
-        <p>Quote Validity: <?php
-        $quoteDate = new DateTime($rfq['quote_date']);
+        <!-- <p><strong>Quote Number:</strong> <?= htmlspecialchars($rfq['code']) ?></p> -->
+        <p><strong>RFQ Number:</strong> <?= htmlspecialchars($rfq['rfq_number']) ?></p>
+        <p><strong>RFQ Title:</strong> <?= htmlspecialchars($rfq['rfq_title']) ?></p>
+        <div style="display: flex; gap: 1.2em;">
+            <p><strong>Quote Date:</strong> <?= date("F d, Y", strtotime($rfq['quote_date'])) ?></p>
+            <p><strong>Quote Validity:</strong> <?php
+            $quoteDate = new DateTime($rfq['quote_date']);
 
-        $validityStr = strtolower(trim($rfq['validity']));
-        $validityInterval = null;
+            $validityStr = strtolower(trim($rfq['validity']));
+            $validityInterval = null;
 
-        if (strpos($validityStr, 'month') !== false) {
-            $months = (int) filter_var($validityStr, FILTER_SANITIZE_NUMBER_INT);
-            $validityInterval = new DateInterval("P{$months}M");
-        } elseif (strpos($validityStr, 'day') !== false) {
-            $days = (int) filter_var($validityStr, FILTER_SANITIZE_NUMBER_INT);
-            $validityInterval = new DateInterval("P{$days}D");
-        }
-
-        if ($validityInterval) {
-            $expiryDate = (clone $quoteDate)->add($validityInterval);
-            $today = new DateTime();
-            $daysLeft = $today->diff($expiryDate)->days;
-
-            if ($today > $expiryDate) {
-                echo "<span class='text-danger'>Expired</span>";
-            } else {
-                echo $daysLeft . " days left";
+            if (strpos($validityStr, 'month') !== false) {
+                $months = (int) filter_var($validityStr, FILTER_SANITIZE_NUMBER_INT);
+                $validityInterval = new DateInterval("P{$months}M");
+            } elseif (strpos($validityStr, 'day') !== false) {
+                $days = (int) filter_var($validityStr, FILTER_SANITIZE_NUMBER_INT);
+                $validityInterval = new DateInterval("P{$days}D");
             }
-        } else {
-            echo "N/A";
-        }
-        ?></p>
-        <p>Lead Time: <?= htmlspecialchars($rfq['lead_time']) ?></p>
-        <p>Sales Person: <?= htmlspecialchars($rfq['salesperson_name']) ?></p>
-        <p>Sales Person Title: <?= htmlspecialchars($rfq['salesperson_title']) ?></p>
-        <p>Sales Person Email: <?= htmlspecialchars($rfq['salesperson_email']) ?></p>
-        <p>Sales Person Phone: <?= htmlspecialchars($rfq['salesperson_phone']) ?></p>
-        <div class="signature">
-            <p>Sales Person Signature:</p>
-            <?php if ($signature_path): ?>
-                <img src="file://<?= $signature_path ?>" alt="Signature">
-            <?php endif; ?>
+
+            if ($validityInterval) {
+                $expiryDate = (clone $quoteDate)->add($validityInterval);
+                $today = new DateTime();
+                $daysLeft = $today->diff($expiryDate)->days;
+
+                if ($today > $expiryDate) {
+                    echo "<span class='text-danger'>Expired</span>";
+                } else {
+                    echo $daysLeft . " days left";
+                }
+            } else {
+                echo "N/A";
+            }
+            ?></p>
+            <p><strong>Lead Time:</strong> <?= htmlspecialchars($rfq['lead_time']) ?></p>
+        </div>
+        <div style="display: flex; gap: 1.2em; align-items: center;">
+            <div>
+                <p><strong>Sales Person:</strong> <?= htmlspecialchars($rfq['salesperson_name']) ?></p>
+                <p><strong>Sales Person Title:</strong> <?= htmlspecialchars($rfq['salesperson_title']) ?></p>
+                <p><strong>Sales Person Email:</strong> <?= htmlspecialchars($rfq['salesperson_email']) ?></p>
+                <p><strong>Sales Person Phone:</strong> <?= htmlspecialchars($rfq['salesperson_phone']) ?></p>
+            </div>
+            <div class="signature">
+                <p><strong>Sales Person Signature:</strong></p>
+                <?php if ($rfq['salesperson_signature']): ?>
+                    <img src="../<?= $rfq['salesperson_signature'] ?>" alt="Signature">
+                <?php endif; ?>
+            </div>
         </div>
     </div>
 
     <table class="quote-table mt-5">
         <thead>
             <tr>
-                <th>Line Item</th>
-                <th>Quantity</th>
+                <th>Line #</th>
+                <th>Qty</th>
                 <th>Unit</th>
                 <th>Description</th>
-                <th>Unit Price Euro</th>
-                <th>Total Price Euro</th>
+                <th>Unit Price €</th>
+                <th>Total Price €</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($lines as $i => $line): ?>
                 <tr>
-                    <td class="text-center"><?= $i + 1 ?></td>
-                    <td class="text-center"><?= htmlspecialchars($line['qty']) ?></td>
-                    <td class="text-center"><?= htmlspecialchars($line['unit']) ?></td>
-                    <td>
-                        PART: <?= htmlspecialchars($line['part']) ?><br>
-                        CUST: <?= htmlspecialchars($line['cust']) ?><br>
-                        MFG: <?= htmlspecialchars($line['mfg']) ?><br>
-                        COO: <?= htmlspecialchars($line['coo']) ?><br>
-                        ECCN: <?= htmlspecialchars($line['eccn']) ?><br>
-                        HTSUS: <?= htmlspecialchars($line['htsus']) ?><br>
-                        DESC: <?= htmlspecialchars($line['description']) ?>
+                    <td width="6%"><?= $i + 1 ?></td>
+                    <td><?= htmlspecialchars($line['qty']) ?></td>
+                    <td><?= htmlspecialchars($line['unit']) ?></td>
+                    <td width="60%">
+                        <b>PART:</b> <?= htmlspecialchars($line['part']) ?>
+                        <b>MFG:</b> <?= htmlspecialchars($line['mfg']) ?>
+                        <b>CUST:</b> <?= htmlspecialchars($line['cust']) ?><br>
+                        <b>COO:</b> <?= htmlspecialchars($line['coo']) ?>
+                        <b>ECCN:</b> <?= htmlspecialchars($line['eccn']) ?>
+                        <b>HTSUS:</b> <?= htmlspecialchars($line['htsus']) ?><br />
+                        <b>DESC:</b> <?= htmlspecialchars($line['description']) ?>
                     </td>
-                    <td class="text-center" style="text-align:right;"><?= number_format($line['unit_price'], 2) ?></td>
-                    <td class="text-center" style="text-align:right;"><?= number_format($line['total_price'], 2) ?></td>
+                    <td width="8%" style="text-align:right;"><?= number_format($line['unit_price'], 2) ?></td>
+                    <td width="8%" style="text-align:right;"><?= number_format($line['total_price'], 2) ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
 
+    <?php
+    $shipping = isset($rfq['shipping']) ? (float) $rfq['shipping'] : 0;
+    $total = $subtotal + $shipping;
+    ?>
     <div class="subtotal">
-        Sub Total: €<?= number_format($subtotal, 2) ?>
+        Shipping: €<?= number_format($shipping, 2) ?><br>
+        Sub Total: €<?= number_format($subtotal, 2) ?><br>
+        <span style="font-size:18px;">Total: €<?= number_format($total, 2) ?></span>
     </div>
+
 </div>
 
 <?php
@@ -284,3 +317,5 @@ $dompdf->loadHtml($html);
 $dompdf->setPaper('A4', 'portrait');
 $dompdf->render();
 $dompdf->stream("RFQ_" . $rfq_id . ".pdf", ["Attachment" => true]);
+
+// include("../templates/footer.php");

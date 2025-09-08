@@ -26,7 +26,7 @@ if (isset($_POST['add_salesPerson'])) {
         }
     }
 
-    $q = "INSERT INTO salesPerson (name, title, email, phone, signature) 
+    $q = "INSERT INTO salesperson (name, title, email, phone, signature) 
           VALUES ('$name','$title','$email','$phone','$signaturePath')";
 
     mysqli_query($conn, $q);
@@ -35,15 +35,15 @@ if (isset($_POST['add_salesPerson'])) {
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
 
-    $sig = mysqli_fetch_assoc(mysqli_query($conn, "SELECT signature FROM salesPerson WHERE id='$id'"));
+    $sig = mysqli_fetch_assoc(mysqli_query($conn, "SELECT signature FROM salesperson WHERE id='$id'"));
     if ($sig && !empty($sig['signature']) && file_exists("../" . $sig['signature'])) {
         unlink("../" . $sig['signature']);
     }
 
-    mysqli_query($conn, "DELETE FROM salesPerson WHERE id='$id'");
+    mysqli_query($conn, "DELETE FROM salesperson WHERE id='$id'");
 }
 
-$result = mysqli_query($conn, "SELECT * FROM salesPerson ORDER BY id DESC");
+$result = mysqli_query($conn, "SELECT * FROM salesperson ORDER BY id DESC");
 ?>
 
 <div class="container-fluid mt-4">

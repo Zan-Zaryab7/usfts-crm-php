@@ -17,22 +17,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_rfq'])) {
     $quote_date = mysqli_real_escape_string($conn, $_POST['quote_date']);
     $validity = mysqli_real_escape_string($conn, $_POST['validity']);
     $lead_time = (int) $_POST['lead_time'];
+    $shipping = (float) $_POST['shipping'];
     $customer_id = (int) $_POST['customer_id'];
     $salesPerson_id = (int) $_POST['salesPerson_id'];
     $billTo_id = (int) $_POST['billTo_id'];
     $buyer_id = (int) $_POST['buyer_id'];
     $shipTo_id = (int) $_POST['shipTo_id'];
 
-    $check = mysqli_query($conn, "SELECT id FROM rfqs WHERE rfq_number = '$rfq_number' LIMIT 1");
-    if (mysqli_num_rows($check) > 0) {
-        echo "<div class='alert alert-danger text-center'>RFQ number must be unique.</div>";
-    } else {
     $q = "UPDATE rfqs SET 
             rfq_number='$rfq_number',
             rfq_title='$rfq_title',
             quote_date='$quote_date',
             validity='$validity',
             lead_time='$lead_time',
+            shipping='$shipping',
             customer_id='$customer_id',
             salesPerson_id='$salesPerson_id',
             billTo_id='$billTo_id',
@@ -69,13 +67,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_rfq'])) {
     echo "<script>window.location.href = 'rfqs.php';</script>";
     exit;
 }
-}
 
 $customers = mysqli_query($conn, "SELECT * FROM customers");
-$shipTos = mysqli_query($conn, "SELECT * FROM shipTo");
+$shipTos = mysqli_query($conn, "SELECT * FROM shipto");
 $buyers = mysqli_query($conn, "SELECT * FROM buyer");
-$billToList = mysqli_query($conn, "SELECT * FROM billTo");
-$salesPersons = mysqli_query($conn, "SELECT * FROM salesPerson");
+$billToList = mysqli_query($conn, "SELECT * FROM billto");
+$salesPersons = mysqli_query($conn, "SELECT * FROM salesperson");
 
 $lines = mysqli_query($conn, "SELECT * FROM rfq_lines WHERE rfq_id='$rfq_id'");
 ?>
@@ -131,10 +128,14 @@ $lines = mysqli_query($conn, "SELECT * FROM rfq_lines WHERE rfq_id='$rfq_id'");
                                 <input type="text" name="validity" class="form-control"
                                     value="<?= htmlspecialchars($rfq['validity']) ?>" required>
                             </div>
-                            <div class="col-12">
+                            <div class="col-6">
                                 <label class="form-label">Lead Time (Days)</label>
                                 <input type="number" name="lead_time" class="form-control" min="0"
                                     value="<?= htmlspecialchars($rfq['lead_time']) ?>" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">Shipping (Optional)</label>
+                                <input type="number" placeholder="Shipping" value="<?= htmlspecialchars($rfq['shipping']) ?>" step="0.01" min="0" name="shipping" class="form-control">
                             </div>
                         </div>
                     </div>
