@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_rfq'])) {
                  customer_id, salesPerson_id, billTo_id, buyer_id, shipTo_id, 
                  status, created_at)
               VALUES 
-                ('$rfq_number', '$rfq_title', '$quote_date', '$validity', '$lead_time', '$shipping'
+                ('$rfq_number', '$rfq_title', '$quote_date', '$validity', '$lead_time', '$shipping',
                  '$customer_id', '$salesPerson_id', '$billTo_id', '$buyer_id', '$shipTo_id',
                  'Open', NOW())";
 
