@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 09, 2025 at 01:11 AM
+-- Generation Time: Sep 11, 2025 at 12:27 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -230,8 +230,27 @@ CREATE TABLE `orders` (
   `total_price` decimal(12,2) DEFAULT 0.00,
   `profit` decimal(12,2) DEFAULT 0.00,
   `margin` decimal(6,2) DEFAULT 0.00,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `rfq_title` varchar(255) DEFAULT NULL,
+  `rfq_number` varchar(100) DEFAULT NULL,
+  `quote_date` date DEFAULT NULL,
+  `validity` varchar(250) DEFAULT NULL,
+  `lead_time` varchar(100) DEFAULT NULL,
+  `shipping` varchar(255) DEFAULT NULL,
+  `salesPerson_id` bigint(20) DEFAULT NULL,
+  `billTo_id` bigint(20) DEFAULT NULL,
+  `buyer_id` bigint(20) DEFAULT NULL,
+  `shipTo_id` bigint(20) DEFAULT NULL,
+  `rfq_status` varchar(50) DEFAULT NULL,
+  `rfq_created_at` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`id`, `code`, `rfq_id`, `customer_id`, `status`, `tracking_number`, `total_cost`, `total_price`, `profit`, `margin`, `created_at`, `rfq_title`, `rfq_number`, `quote_date`, `validity`, `lead_time`, `shipping`, `salesPerson_id`, `billTo_id`, `buyer_id`, `shipTo_id`, `rfq_status`, `rfq_created_at`) VALUES
+(25, 'O00001', 28, 14, '', NULL, 0.00, 0.00, 0.00, 0.00, '2025-09-10 20:33:26', 'Rfq Pdf', '9789', '2025-09-08', '1 Months', '10', '45.79', 4, 2, 2, 2, 'Open', '2025-09-05');
 
 --
 -- Triggers `orders`
@@ -258,8 +277,24 @@ CREATE TABLE `order_lines` (
   `qty` int(11) DEFAULT 1,
   `unit_price` decimal(12,2) DEFAULT 0.00,
   `cost_price` decimal(12,2) DEFAULT 0.00,
-  `tracking_number` varchar(100) DEFAULT NULL
+  `tracking_number` varchar(100) DEFAULT NULL,
+  `unit` varchar(50) DEFAULT NULL,
+  `part` varchar(255) DEFAULT NULL,
+  `mfg` varchar(255) DEFAULT NULL,
+  `coo` varchar(100) DEFAULT NULL,
+  `eccn` varchar(100) DEFAULT NULL,
+  `cust` varchar(255) DEFAULT NULL,
+  `htsus` varchar(100) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `total_price` decimal(12,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `order_lines`
+--
+
+INSERT INTO `order_lines` (`id`, `order_id`, `product`, `qty`, `unit_price`, `cost_price`, `tracking_number`, `unit`, `part`, `mfg`, `coo`, `eccn`, `cust`, `htsus`, `description`, `total_price`) VALUES
+(133, 25, NULL, 5, 375.00, 0.00, NULL, 'Each', '5383-TW-12-ND', 'Maury Microwave / TW-12', 'UNKNOWN', 'EAR99', 'NATO PO NO. 42521602', '9030.89.0100', 'Torque Wrench ', 1250.00);
 
 -- --------------------------------------------------------
 
@@ -718,13 +753,13 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `order_lines`
 --
 ALTER TABLE `order_lines`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=123;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=134;
 
 --
 -- AUTO_INCREMENT for table `products`

@@ -270,6 +270,7 @@ ob_start();
                 <th>Description</th>
                 <th>Unit Price €</th>
                 <th>Total Price €</th>
+                <th>Note To Buyer</th>
             </tr>
         </thead>
         <tbody>
@@ -289,6 +290,7 @@ ob_start();
                     </td>
                     <td width="8%" style="text-align:right;"><?= number_format($line['unit_price'], 2) ?></td>
                     <td width="8%" style="text-align:right;"><?= number_format($line['total_price'], 2) ?></td>
+                    <td width="14%" style="text-align:right;"></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

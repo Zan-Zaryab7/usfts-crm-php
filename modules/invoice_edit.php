@@ -1,5 +1,4 @@
 <?php
-// include("../config/database.php");
 include("../includes/auth.php");
 include("../templates/header.php");
 include("../templates/navbar.php");

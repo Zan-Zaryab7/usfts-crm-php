@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_rfq'])) {
     mysqli_query($conn, $q) or die("RFQ Update Error: " . mysqli_error($conn));
 
     mysqli_query($conn, "DELETE FROM rfq_lines WHERE rfq_id='$rfq_id'");
-
+    
     if (!empty($_POST['lines'])) {
         foreach ($_POST['lines'] as $line) {
             $qty = (int) $line['qty'];

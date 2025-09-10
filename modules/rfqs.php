@@ -20,6 +20,71 @@ if (isset($_GET['delete'])) {
     echo "<script>window.location.href = 'rfqs.php';</script>";
     exit;
 }
+
+
+if (isset($_POST['convertToOrder']) && !empty($_POST['rfq_id'])) {
+    $rfq_id = (int) $_POST['rfq_id'];
+
+    $check_order = mysqli_query($conn, "SELECT id FROM orders WHERE rfq_id = $rfq_id");
+    if (mysqli_num_rows($check_order) == 0) {
+        $rfq_res = mysqli_query($conn, "SELECT * FROM rfqs WHERE id = $rfq_id");
+        if (mysqli_num_rows($rfq_res) > 0) {
+            $rfq = mysqli_fetch_assoc($rfq_res);
+
+            $conv_order_query = "INSERT INTO orders 
+                (rfq_id, customer_id, status, created_at, 
+                 rfq_title, rfq_number, quote_date, validity, lead_time, shipping,
+                 salesPerson_id, billTo_id, buyer_id, shipTo_id, rfq_status, rfq_created_at) 
+                VALUES (
+                    '{$rfq['id']}',
+                    '{$rfq['customer_id']}',
+                    '{$rfq['status']}',
+                    NOW(),
+                    '" . mysqli_real_escape_string($conn, $rfq['rfq_title']) . "',
+                    '{$rfq['rfq_number']}',
+                    '{$rfq['quote_date']}',
+                    '{$rfq['validity']}',
+                    '{$rfq['lead_time']}',
+                    '{$rfq['shipping']}',
+                    '{$rfq['salesPerson_id']}',
+                    '{$rfq['billTo_id']}',
+                    '{$rfq['buyer_id']}',
+                    '{$rfq['shipTo_id']}',
+                    '{$rfq['status']}',
+                    '{$rfq['created_at']}'
+                )";
+            mysqli_query($conn, $conv_order_query);
+            $order_id = mysqli_insert_id($conn);
+
+            $rfq_lines_res = mysqli_query($conn, "SELECT * FROM rfq_lines WHERE rfq_id = $rfq_id");
+            while ($line = mysqli_fetch_assoc($rfq_lines_res)) {
+                $conv_line_query = "INSERT INTO order_lines 
+                    (order_id, qty, unit_price, unit, part, mfg, coo, eccn, cust, htsus, description, total_price) 
+                    VALUES (
+                        '$order_id',
+                        '{$line['qty']}',
+                        '{$line['unit_price']}',
+                        '{$line['unit']}',
+                        '" . mysqli_real_escape_string($conn, $line['part']) . "',
+                        '" . mysqli_real_escape_string($conn, $line['mfg']) . "',
+                        '{$line['coo']}',
+                        '{$line['eccn']}',
+                        '{$line['cust']}',
+                        '{$line['htsus']}',
+                        '" . mysqli_real_escape_string($conn, $line['description']) . "',
+                        '{$line['total_price']}'
+                    )";
+                mysqli_query($conn, $conv_line_query);
+            }
+
+            echo "<script>alert('RFQ #{$rfq['rfq_number']} converted to Order #$order_id successfully!'); window.location.href='rfqs.php';</script>";
+            exit;
+        }
+    } else {
+        echo "<script>alert('This RFQ is already converted to an Order!'); window.location.href='rfqs.php';</script>";
+        exit;
+    }
+}
 ?>
 
 <div class="container-fluid mt-4">
@@ -93,21 +158,37 @@ if (isset($_GET['delete'])) {
                                 <td>
                                     <span class="badge bg-info"><?= $r['status'] ?></span>
                                 </td>
-                                <td>
-                                    <a href="#" onclick="window.location='rfq-pdf.php?id=<?= $r['id'] ?>'" title="Print" class="btn btn-sm btn-outline-success">
+                                <td style="display: flex; gap: 4px;">
+                                    <button onclick="window.location='rfq-pdf.php?id=<?= $r['id'] ?>'" title="Print"
+                                        class="btn btn-sm btn-outline-success">
                                         <i class="bi bi-printer"></i>
-                                    </a>
-                                    <a href="#" onclick="window.location='rfq_edit.php?id=<?= $r['id'] ?>'" title="Edit"
+                                    </button>
+                                    <button onclick="window.location='rfq_edit.php?id=<?= $r['id'] ?>'" title="Edit"
                                         class="btn btn-sm btn-outline-primary">
                                         <i class="bi bi-pencil"></i>
-                                    </a>
+                                    </button>
                                     <a href="?delete=<?= $r['id'] ?>" title="Delete" class="btn btn-sm btn-outline-danger"
-                                        onclick="return confirm('Delete this Qoutation?');">
+                                        onclick="return confirm('Delete this Quotation?');">
                                         <i class="bi bi-trash2"></i>
                                     </a>
-                                    <!-- <a href="#" title="Order" class="btn btn-sm btn-outline-info">
-                                        <i class="bi bi-arrow-repeat"></i>
-                                    </a> -->
+
+                                    <?php
+                                    $already_order = mysqli_query($conn, "SELECT id FROM orders WHERE rfq_id = {$r['id']}");
+                                    if (mysqli_num_rows($already_order) == 0) {
+                                        ?>
+                                        <form method="post"
+                                            onsubmit="return confirm('Are you sure you want to convert this RFQ to an Order?');">
+                                            <input type="hidden" name="rfq_id" value="<?= $r['id'] ?>">
+                                            <button type="submit" name="convertToOrder" title="Convert to Order"
+                                                class="btn btn-sm btn-outline-info">
+                                                <i class="bi bi-arrow-repeat"></i>
+                                            </button>
+                                        </form>
+                                    <?php } else { ?>
+                                        <button class="btn btn-sm btn-secondary" aria-readonly="" title="Already Converted">
+                                            <i class="bi bi-check-circle"></i>
+                                        </button>
+                                    <?php } ?>
                                 </td>
                             </tr>
                         <?php } ?>
